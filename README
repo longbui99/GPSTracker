@@ -59,6 +59,4 @@ app.get('/home',(req,res,next)=>{
 ________________________________________________________________________________________________________________________________________
 Nhấn mạnh sau cùng, vui lòng không sửa những tập tin không được chỉ định thay đổi, nếu gây ra conflict sẽ rất phức tạp, muốn bổ sung gì
 thì nhắn cho mình. Để mình xem xét và sửa đổi tổng thể luôn.
-
-Đợi nó hiện hoặc không đợi cũng được, mình có làm schedule rồi
-Google trả về.
+Cập nhật lên git, chỉ cập nhật đúng folder của mình thôi.

@@ -1,0 +1,9 @@
+{
+    "DatabaseName": "GPSManagement",
+    "ClientAuthCollection": "ClientAuthCollection",
+    "AdminAuthCollection": "AdminAuthCollection",
+    "ClientInfoCollection": "ClientInfoCollection",
+    "ClientDeviceControl": "ClientDeviceControl",
+    "GPSDeviceCollection": "GPSDeviceCollection",
+    "NTFDeviceCollection": "NTFDeviceCollection"
+}

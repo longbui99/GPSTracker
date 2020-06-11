@@ -60,3 +60,4 @@ ________________________________________________________________________________
 Nhấn mạnh sau cùng, vui lòng không sửa những tập tin không được chỉ định thay đổi, nếu gây ra conflict sẽ rất phức tạp, muốn bổ sung gì
 thì nhắn cho mình. Để mình xem xét và sửa đổi tổng thể luôn.
 Cập nhật lên git, chỉ cập nhật đúng folder của mình thôi.
+Mấy cái file .s không cần quan tâm, mục đích chỉ để giữ cái cấu trúc thư mục.

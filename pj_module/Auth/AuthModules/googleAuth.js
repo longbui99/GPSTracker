@@ -1,7 +1,7 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const Config = require('../config/googleConfig.json')
-const Hash = require('./Hash.js')
-const DBMS = require('../config/DBMS.json')
+const Config = require('../../config/googleConfig.json')
+const Hash = require('../AuthSecure/Hash.js')
+const DBMS = require('../../config/DBMS.json')
 
 function updateClientInformation(User, profile, ObjectId) {
     console.log(profile)

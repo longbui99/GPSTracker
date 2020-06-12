@@ -1,8 +1,8 @@
-var SISUCondition = [false,false]
+var SISUCondition = [false, false]
 
-const getCondition = ()=>{
+const getCondition = () => {
     let returnVal = true;
-    SISUCondition.forEach(e=>{
+    SISUCondition.forEach(e => {
         returnVal &= e;
     })
     return returnVal
@@ -44,48 +44,48 @@ const signInHtml = `<div class="mt-2 mb-2" id="s-i-cli-ui">
 </div>
 </div>`
 
-function UserChange(self){
-    if(self.value.length == 0){
+function UserChange(self) {
+    if (self.value.length == 0) {
         document.getElementById('usern-alert').style.display = 'inline-block'
         SISUCondition[0] = false
     }
-    else{
+    else {
         SISUCondition[0] = true
         document.getElementById('usern-alert').style.display = 'none'
     }
 }
-function PawChange(self){
-    if(self.value.length <= 8){
+function PawChange(self) {
+    if (self.value.length <= 8) {
         document.getElementById('paw-alert').style.display = "inline-block"
         SISUCondition[1] = false
     }
-    else{
+    else {
         SISUCondition[1] = true
         document.getElementById('paw-alert').style.display = "none"
     }
 }
 
 
-function localSIAuth(){
-    if(getCondition()){
+function localSIAuth() {
+    if (getCondition()) {
         $.ajax({
-            type:"POST",
-            data:{
-                username:document.getElementById('si-username').value,
-                password:document.getElementById('si-password').value,
-            },
-            url:"/auth/require-log-local-sign"
-        }).done(res=>{
-            if(res){
+            type: "POST",
+            url: "/auth/require-log-local-sign",
+            data: {
+                username: document.getElementById('si-username').value,
+                password: document.getElementById('si-password').value,
+            }
+        }).done(res => {
+            if (res) {
                 window.location.replace('/home')
             }
         })
     }
-    else{
-        if(!SISUCondition[0])
-        document.getElementById('usern-alert').style.display = 'inline-block'
-        if(!SISUCondition[1])
-        document.getElementById('paw-alert').style.display = "inline-block"
+    else {
+        if (!SISUCondition[0])
+            document.getElementById('usern-alert').style.display = 'inline-block'
+        if (!SISUCondition[1])
+            document.getElementById('paw-alert').style.display = "inline-block"
     }
 }
 
@@ -93,34 +93,34 @@ function localSIAuth(){
 const signUpHtml = `<div class="mt-2 mb-2" id="s-u-cli-ui">
 <p class="text-primary text-center" id="s-i-form-head-ui">Welcome back</p>
 <div class="dropdown-divider border  bg-dark"></div>
-<small class="text-danger" id="usern-alert"></small>
+<small class="text-danger" style="display:none" id="usern-alert">Your username required!</small>
 <div class="input-group flex-nowrap">
 
     <div class="input-group-prepend">
         <span class="input-group-text" id="addon-wrapping">@</span>
     </div>
-    <input type="text" id="su-username" class="form-control" placeholder="Email" aria-label="Username"
+    <input type="text" id="su-username" onkeyup={UserChange(this)} class="form-control" placeholder="Email" aria-label="Username"
         aria-describedby="addon-wrapping" name="email" id="ip-user-evn">
 </div>
 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
     else.</small>
 
 <div class="dropdown-divider"></div>
+<small class="text-danger" id="paw-alert" style="display:none">Your password must  at least 8 characters!</small>
 <div class="input-group flex-nowrap">  
-    <small class="text-danger" id="pw-alert"></small>
     <div class="input-group-prepend">
         <span class="input-group-text" id="addon-wrapping"><i class="fas fa-key"></i></span>
     </div>
-    <input type="text" id="su-password" class="form-control" placeholder="Password" aria-label="Password"
+    <input type="password" id="su-password" onkeyup={PWSUChange(this)} class="form-control" placeholder="Password" aria-label="Password"
         aria-describedby="addon-wrapping" name="password" id="ip-pass-evn">
 </div>
+<small class="text-danger" id="checking-pw-alert" style="display:none">Your password does not same!</small>
 <div class="input-group flex-nowrap mt-2" id="ip-c-pas-contain">
-    <small class="text-danger" id="checking-pw-alert"></small>
     <div class="input-group-prepend">
         <span class="input-group-text" id="addon-wrapping"><i
                 class="fas fa-check-double"></i></span>
     </div>
-    <input type="text" id="su-password-c" class="form-control" placeholder="Check password" aria-label="Check"
+    <input type="password" id="su-password-c" onkeyup={PasswordSUCheckChange(this)}  class="form-control" placeholder="Check password" aria-label="Check"
         aria-describedby="addon-wrapping" id="ip-c-pass-evn">
 </div>
 <div class="mt-4 mb-3 align-middle pl-2" id="submit-oraction">
@@ -136,42 +136,121 @@ const signUpHtml = `<div class="mt-2 mb-2" id="s-u-cli-ui">
 </div>
 </div>`
 
-const NotificationHtml = ``
+function PWSUChange(self) {
+    if (self.value.length <= 8) {
+        document.getElementById('paw-alert').style.display = "inline-block";
+    }
+    else {
+        document.getElementById('paw-alert').style.display = "none";
+    }
+}
 
-var C = [false,  false]
+function PasswordSUCheckChange(self) {
+    let pwValue = document.getElementById('su-password').value;
+    if (self.value === pwValue) {
+        document.getElementById('checking-pw-alert').style.display = "none";
+        SISUCondition[1] = true;
+    }
+    else {
+        document.getElementById('checking-pw-alert').style.display = "inline-block";
+        SISUCondition[1] = false;
+    }
+}
 
-$('#s-i-ui-control').click(e=>{
+function localSUAuth() {
+    if (getCondition()) {
+        $.ajax({
+            type: "POST",
+            url: "/auth/require-log-local-sign-up",
+            data: {
+                username: document.getElementById('su-username').value,
+                password: document.getElementById('su-password').value
+            }
+        }).done(res => {
+            if (res) {
+                initNotification(document.getElementById('su-username').value, document.getElementById('su-password').value)
+                document.getElementById('usern-alert').style.display = "none";
+            }
+            else {
+                document.getElementById('usern-alert').textContent = "Your username is already exist!";
+                document.getElementById('usern-alert').style.display = "inline-block";
+            }
+        })
+    }
+    else {
+        if (!SISUCondition[0])
+            document.getElementById('usern-alert').style.display = "inline-block";
+        if (!SISUCondition[1]) {
+            document.getElementById('checking-pw-alert').style.display = "inline-block";
+            if (document.getElementById('su-password').value.length == 0)
+                document.getElementById('paw-alert').style.display = "inline-block";
+        }
+    }
+}
+
+
+
+function googleAuthRequest() {
+    window.open("/auth/google", "MsgWindow", "width=450,height=600, top=40, left=500");
+}
+
+
+var C = [false, false]
+
+
+$('#s-i-ui-control').click(e => {
     SIFUNCTION()
 })
-SIFUNCTION = ()=>{
-    if (!C[0]){
+SIFUNCTION = () => {
+    if (!C[0]) {
         $('#auth-frame-cont').html(signInHtml)
         C[1] = false
     }
-    else{
+    else {
         $('#auth-frame-cont').html(``)
     }
     C[0] = !C[0]
 }
 
-$('#s-u-ui-control').click(e=>{
+$('#s-u-ui-control').click(e => {
     SUFUNCTION()
 })
 
-SUFUNCTION = () =>{
-    if (!C[1]){
+SUFUNCTION = () => {
+    if (!C[1]) {
         $('#auth-frame-cont').html(signUpHtml)
         C[0] = false
     }
-    else{
+    else {
         $('#auth-frame-cont').html(``)
     }
     C[1] = !C[1]
 }
 
-function googleAuthRequest(){
-    window.open("/auth/google", "MsgWindow", "width=450,height=600, top=40, left=500");
-}
-function localSUAuth(){
 
+function initNotification(username, password){
+    let NotificationHtml = `
+    <div id="elementToast" class="toast" style="position: absolute; top: 0; right: 0; min-width:300px">
+    <div class="toast-header">
+        <strong class="mr-auto">Notification</strong>
+        <small>just now</small>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="toast-body">
+    Your account has been signed up:<br>
+    <label for="submit" class="btn btn-success">Click here</label> to sign in.
+    <form action="/auth/require-log-local-sign" method="GET" style="display:none">
+                <input type="text" name="username" value="${username}">
+                <input type="password" name="password" value="${password}">
+                <button id="submit"></button>
+            </form>
+    </div>
+    </div>
+    `
+    $("body").append(NotificationHtml)
+    $('#elementToast').toast({autohide:false})
+    $('#elementToast').toast('show')
 }
+

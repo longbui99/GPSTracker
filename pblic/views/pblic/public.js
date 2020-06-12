@@ -1,22 +1,34 @@
+var SISUCondition = [false,false]
+
+const getCondition = ()=>{
+    let returnVal = true;
+    SISUCondition.forEach(e=>{
+        returnVal &= e;
+    })
+    return returnVal
+}
+
 const signInHtml = `<div class="mt-2 mb-2" id="s-i-cli-ui">
 <p class="text-primary text-center" id="s-i-form-head-ui">Welcome back</p>
 <div class="dropdown-divider border  bg-dark"></div>
+<small class="text-danger" style="display:none" id="usern-alert">Your username required!</small>
 <div class="input-group flex-nowrap">
     <div class="input-group-prepend">
         <span class="input-group-text" id="addon-wrapping">@</span>
     </div>
-    <input type="text" id="si-username" class="form-control" placeholder="Email" aria-label="Username"
+    <input type="text" onkeyup="UserChange(this)" id="si-username" class="form-control" placeholder="Email" aria-label="Username"
         aria-describedby="addon-wrapping">
 </div>
 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
     else.</small>
 
 <div class="dropdown-divider"></div>
+<small class="text-danger" id="paw-alert" style="display:none">Your password must  at least 8 characters!</small>
 <div class="input-group flex-nowrap">
     <div class="input-group-prepend">
         <span class="input-group-text" id="addon-wrapping"><i class="fas fa-key"></i></span>
     </div>
-    <input type="text" id="si-password" class="form-control" placeholder="Password" aria-label="Password"
+    <input type="password" onkeyup="PawChange(this)" id="si-password" class="form-control" placeholder="Password" aria-label="Password"
         aria-describedby="addon-wrapping">
 </div>
 <div class="mt-4 mb-3 align-middle pl-2" id="submit-oraction">
@@ -32,10 +44,58 @@ const signInHtml = `<div class="mt-2 mb-2" id="s-i-cli-ui">
 </div>
 </div>`
 
+function UserChange(self){
+    if(self.value.length == 0){
+        document.getElementById('usern-alert').style.display = 'inline-block'
+        SISUCondition[0] = false
+    }
+    else{
+        SISUCondition[0] = true
+        document.getElementById('usern-alert').style.display = 'none'
+    }
+}
+function PawChange(self){
+    if(self.value.length <= 8){
+        document.getElementById('paw-alert').style.display = "inline-block"
+        SISUCondition[1] = false
+    }
+    else{
+        SISUCondition[1] = true
+        document.getElementById('paw-alert').style.display = "none"
+    }
+}
+
+
+function localSIAuth(){
+    if(getCondition()){
+        $.ajax({
+            type:"POST",
+            data:{
+                username:document.getElementById('si-username').value,
+                password:document.getElementById('si-password').value,
+            },
+            url:"/auth/require-log-local-sign"
+        }).done(res=>{
+            if(res){
+                window.location.replace('/home')
+            }
+        })
+    }
+    else{
+        if(!SISUCondition[0])
+        document.getElementById('usern-alert').style.display = 'inline-block'
+        if(!SISUCondition[1])
+        document.getElementById('paw-alert').style.display = "inline-block"
+    }
+}
+
+
 const signUpHtml = `<div class="mt-2 mb-2" id="s-u-cli-ui">
 <p class="text-primary text-center" id="s-i-form-head-ui">Welcome back</p>
 <div class="dropdown-divider border  bg-dark"></div>
+<small class="text-danger" id="usern-alert"></small>
 <div class="input-group flex-nowrap">
+
     <div class="input-group-prepend">
         <span class="input-group-text" id="addon-wrapping">@</span>
     </div>
@@ -46,7 +106,8 @@ const signUpHtml = `<div class="mt-2 mb-2" id="s-u-cli-ui">
     else.</small>
 
 <div class="dropdown-divider"></div>
-<div class="input-group flex-nowrap">
+<div class="input-group flex-nowrap">  
+    <small class="text-danger" id="pw-alert"></small>
     <div class="input-group-prepend">
         <span class="input-group-text" id="addon-wrapping"><i class="fas fa-key"></i></span>
     </div>
@@ -54,6 +115,7 @@ const signUpHtml = `<div class="mt-2 mb-2" id="s-u-cli-ui">
         aria-describedby="addon-wrapping" name="password" id="ip-pass-evn">
 </div>
 <div class="input-group flex-nowrap mt-2" id="ip-c-pas-contain">
+    <small class="text-danger" id="checking-pw-alert"></small>
     <div class="input-group-prepend">
         <span class="input-group-text" id="addon-wrapping"><i
                 class="fas fa-check-double"></i></span>
@@ -111,8 +173,5 @@ function googleAuthRequest(){
     window.open("/auth/google", "MsgWindow", "width=450,height=600, top=40, left=500");
 }
 function localSUAuth(){
-
-}
-function localSIAuth(){
 
 }

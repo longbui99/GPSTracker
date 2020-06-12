@@ -1,7 +1,6 @@
 const passport = require("passport")
 const googleAuth = require('./AuthModules/googleAuth');
 const localAuth = require('./AuthModules/localAuth.js');
-const Hash = require('./AuthSecure/Hash.js')
 const AuthFunction = require('./AuthFunction/AuthFunction')
 
 module.exports = function (app, User, ObjectId) {

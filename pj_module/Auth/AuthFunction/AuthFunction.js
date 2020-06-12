@@ -10,6 +10,11 @@ exports.configureFunction = (user, obj)=>{
     ObjectId = obj
 }
 
+// Client side function 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 exports.clientLoginDone = (req,res)=>{
     res.write(`
             <script>
@@ -19,28 +24,6 @@ exports.clientLoginDone = (req,res)=>{
             `)
 }
 
-exports.adminLoginFunc = (req, res) => {
-    let redirectAdminPage = `
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-</head>
-<body>
-    <form style="display:none;" action="/auth/adm-requi-log-local" method="POST">
-        <input type="text" value="${req.params.user}" name="username">
-        <input type="text" value="${req.params.pass}" name="password">
-        <button type="submit" id="buttonForm"></button>
-    </form>
-    <script>
-        document.getElementById('buttonForm').click()
-    </script>
-</body>
-</html>
-    `
-    res.send(redirectAdminPage)
-}
 
 exports.LocalStragegyClient = (user, pass, done) => {
     User.collection(DBMS.ClientAuthCollection).findOne({username: user},(err,res)=>{
@@ -86,13 +69,13 @@ exports.AuthLocalSignUp = async (req, res, next) => {
         id = id.ops[0]._id
         console.log("ID:",id)
         let Dat = new Date()
-        let DMY = Dat.getDate() + "/" + Dat.getMonth() + "/" + Dat.getFullYear();
+        let DMY = Dat.getDate() + "/" + parseInt( Dat.getMonth())+1 + "/" + Dat.getFullYear();
         await User.collection(DBMS.ClientInfoCollection).insertOne({
             "_id": ObjectId(id),
-            Fname: "",
+            Fname: "Not Update",
             Lname: "",
             Email: req.body.username,
-            Contact: "",
+            Contact: "+84000000000",
             Balance: 0,
             DateIn: DMY,
             LastAccess: DMY,
@@ -176,13 +159,13 @@ exports.GoogleStrategy = function (accessToken, refreshToken, profile, done) {
 function GoogleAddNewClient (User, profile, ObjectId) {
     // console.log(profile)
     let Dat = new Date()
-    let DMY = Dat.getDate() + "/" + Dat.getMonth() + "/" + Dat.getFullYear();
+    let DMY = Dat.getDate() + "/" + parseInt( Dat.getMonth())+1 + "/" + Dat.getFullYear();
     User.collection(DBMS.ClientInfoCollection).insertOne({
         "_id": ObjectId,
         Fname: profile.given_name,
         Lname: profile.family_name,
         Email: profile.email,
-        Contact:"",
+        Contact:"+840000000000",
         Balance:0,
         DateIn: DMY,
         LastAccess:DMY,
@@ -199,4 +182,30 @@ function GoogleAddNewClient (User, profile, ObjectId) {
         if (err)
             console.log(err)
     })
+}
+
+// Admin side function
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+exports.adminLoginFunc = (req, res) => {
+    let redirectAdminPage = `
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <form style="display:none;" action="/auth/adm-requi-log-local" method="POST">
+        <input type="text" value="${req.params.user}" name="username">
+        <input type="text" value="${req.params.pass}" name="password">
+        <button type="submit" id="buttonForm"></button>
+    </form>
+    <script>
+        document.getElementById('buttonForm').click()
+    </script>
+</body>
+</html>
+    `
+    res.send(redirectAdminPage)
 }

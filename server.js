@@ -3,6 +3,7 @@ const expressSession = require('express-session');
 const bodyParser = require('body-parser');
 const DBMS = require('./pj_module/Config/DBMS.json');
 const app = express();
+const cors = require('cors')
 
 
 // import modules implementation
@@ -14,7 +15,7 @@ const AuthRequest = require('./pj_module/Auth/AuthExport');
 
 
 // Config server
-
+app.use(cors())
 app.use(express.static('./pblic'));
 
 app.set('view engine', 'ejs');

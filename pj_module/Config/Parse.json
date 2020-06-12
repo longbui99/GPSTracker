@@ -1,0 +1,14 @@
+{
+    "State":
+    [
+        "Normal",
+        "Familiar Customer",
+        "Renew Password",
+        "Expire"
+    ],
+    "Level":
+    [
+        "Normal","Medium","Premium"
+    ],
+    "ClassState":["success","info","warning","danger"]
+}

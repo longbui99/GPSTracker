@@ -69,7 +69,7 @@ exports.AuthLocalSignUp = async (req, res, next) => {
         id = id.ops[0]._id
         console.log("ID:",id)
         let Dat = new Date()
-        let DMY = Dat.getDate() + "/" + parseInt( Dat.getMonth())+1 + "/" + Dat.getFullYear();
+        let DMY = Dat.getDate() + "/" + (Dat.getMonth()+1) + "/" + Dat.getFullYear();
         await User.collection(DBMS.ClientInfoCollection).insertOne({
             "_id": ObjectId(id),
             Fname: "Not Update",
@@ -159,7 +159,7 @@ exports.GoogleStrategy = function (accessToken, refreshToken, profile, done) {
 function GoogleAddNewClient (User, profile, ObjectId) {
     // console.log(profile)
     let Dat = new Date()
-    let DMY = Dat.getDate() + "/" + parseInt( Dat.getMonth())+1 + "/" + Dat.getFullYear();
+    let DMY = Dat.getDate() + "/" + (Dat.getMonth()+1) + "/" + Dat.getFullYear();
     User.collection(DBMS.ClientInfoCollection).insertOne({
         "_id": ObjectId,
         Fname: profile.given_name,

@@ -1,3 +1,12 @@
+Cập nhật bổ sung, có thêm thư mục mới là MQTT, trong đó có thư mực MQTTExport.js với hai chức năng chính:
+-InitMQTTConnect(...): Hàm này mọi ng k cần quan tâm.
+-publicizeToDevice(DeviceID,transferValue) : Bảo lưu ý hàm này:
+DeviceID: ID của Device, thông thường là LightD do trường hợp này chúng ta chỉ được lấy một thiết bị.
+transferValue: Cái này, là một mảng chứa hai giá trị nằm trong value: tức là:
+values: transferValue ( => transferValue = ["data1","data2"]
+Cách sử dụng:
+const MQTTProtocol = require(`path to MQTTExport.js`)
+---------------------------------------------------------------------------------------------------------------------------
 Chú ý cách sử dụng source.
 Video demo: (Đọc xong hết r hẵng coi video nha mấy ba) https://www.youtube.com/watch?v=wIZMPVHx5Sk
 _________________________________________________________________________________________________________________________________________

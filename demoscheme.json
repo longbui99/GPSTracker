@@ -49,6 +49,7 @@
         "DeviceID":"1999",
         "DeviceStatus":1,
         "DeviceOwnerID":"123456789...",
+        "DeviceDateIn":"",
         "DeviceData":{
             "Longitude":"107.3",
             "Latitude":"103.7"
@@ -58,6 +59,7 @@
         "DeviceID":"2000",
         "DeviceStatus":1,
         "DeviceOwnerID":"123456789...",
+        "DeviceDateIn":"",
         "DeviceData":null
     }
 }

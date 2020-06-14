@@ -11,4 +11,8 @@
         "Normal","Medium","Premium"
     ],
     "ClassState":["success","info","warning","danger"]
+    ,
+    "DashBoard":{
+        "Week":["Monday","TuesDay","Wednesday","Thusday","Friday","Saturday","Sunday"]
+    }
 }

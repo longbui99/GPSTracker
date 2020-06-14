@@ -12,6 +12,7 @@ const DeviceSign = require('./pj_module/Client/DviceSign/DviceSignExport');
 const CustomersProfile = require('./pj_module/Client/ProfileInf/ProfileExport');
 const AdmManagerMain = require('./pj_module/Admin/AdmExport');
 const AuthRequest = require('./pj_module/Auth/AuthExport');
+const MQTTProtocol = require('./pj_module/MQTT/MQTTExport')
 
 
 // Config server
@@ -47,6 +48,7 @@ client.connect().then(token => {
     DeviceSign(app,User,ObjectId)
     CustomersProfile(app,User,ObjectId)
     AdmManagerMain(app,User,ObjectId)
+    MQTTProtocol.initMQTTConnect(User,ObjectId)
     // Notification
     console.log('DBMS ready')
 });

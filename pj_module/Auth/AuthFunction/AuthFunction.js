@@ -68,8 +68,8 @@ exports.AuthLocalSignUp = async (req, res, next) => {
         })
         id = id.ops[0]._id
         console.log("ID:",id)
-        let Dat = new Date()
-        let DMY = Dat.getDate() + "/" + (Dat.getMonth()+1) + "/" + Dat.getFullYear();
+        let Dat = new Date().toISOString().substring(0,10)
+        // let DMY = Dat.getDate() + "/" + (Dat.getMonth()+1) + "/" + Dat.getFullYear();
         await User.collection(DBMS.ClientInfoCollection).insertOne({
             "_id": ObjectId(id),
             Fname: "Not Update",
@@ -77,8 +77,8 @@ exports.AuthLocalSignUp = async (req, res, next) => {
             Email: req.body.username,
             Contact: "+84000000000",
             Balance: 0,
-            DateIn: DMY,
-            LastAccess: DMY,
+            DateIn: Dat,
+            LastAccess: Dat,
             State: 0,
             Level: {
                 NowLevel: 0,
@@ -158,8 +158,8 @@ exports.GoogleStrategy = function (accessToken, refreshToken, profile, done) {
 
 function GoogleAddNewClient (User, profile, ObjectId) {
     // console.log(profile)
-    let Dat = new Date()
-    let DMY = Dat.getDate() + "/" + (Dat.getMonth()+1) + "/" + Dat.getFullYear();
+    let Dat = new Date().toISOString().substring(0,10)
+    // let DMY = Dat.getDate() + "/" + (Dat.getMonth()+1) + "/" + Dat.getFullYear();
     User.collection(DBMS.ClientInfoCollection).insertOne({
         "_id": ObjectId,
         Fname: profile.given_name,
@@ -167,8 +167,8 @@ function GoogleAddNewClient (User, profile, ObjectId) {
         Email: profile.email,
         Contact:"+840000000000",
         Balance:0,
-        DateIn: DMY,
-        LastAccess:DMY,
+        DateIn: Dat,
+        LastAccess:Dat,
         State:0,
         Level:{
             NowLevel:0,

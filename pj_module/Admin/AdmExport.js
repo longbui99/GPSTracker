@@ -13,7 +13,7 @@ module.exports = function (app, User, ObjectId) {
 
     app.post('/adm/get-full-account-to-render', (req, res) => {
         User.collection(DBMS.ClientInfoCollection).find({}
-            , { projection: { _id: 1, Fname: 1, Lname: 1,Contact:1, Email: 1, LastAccess: 1 } }).toArray(function (err, result) {
+            , { projection: { _id: 1, Fname: 1, Lname: 1, Contact: 1, Email: 1, LastAccess: 1 } }).toArray(function (err, result) {
                 if (err) {
                     console.log(err);
                     res.send([])
@@ -24,20 +24,51 @@ module.exports = function (app, User, ObjectId) {
             })
     })
 
-    app.post('/adm/get-peer-profile',async(req,res)=>{
+    app.post('/adm/get-peer-profile', async (req, res) => {
         let returnVal = {}
-        let dbrt = await User.collection(DBMS.ClientInfoCollection).findOne({"_id":ObjectId(req.body.username)})
+        let dbrt = await User.collection(DBMS.ClientInfoCollection).findOne({ "_id": ObjectId(req.body.username) })
         returnVal.FullName = dbrt.Fname + " " + dbrt.Lname;
         returnVal.Email = dbrt.Email;
         returnVal.Contact = dbrt.Contact;
         returnVal.Balance = dbrt.Balance;
-        returnVal.DateIn =dbrt.DateIn;
+        returnVal.DateIn = dbrt.DateIn;
         returnVal.LastAccess = dbrt.LastAccess;
         returnVal.CountDate = Parse.parseDate(dbrt.DateIn)
         returnVal.State = Parse.parseState(dbrt.State);
-        returnVal.Level = Parse.parseLevel( dbrt.Level.NowLevel)
-        returnVal.hisLevel = [dbrt.Level.HisLevel.Normal,dbrt.Level.HisLevel.Medium,dbrt.Level.HisLevel.Premium]
+        returnVal.Level = Parse.parseLevel(dbrt.Level.NowLevel)
+        returnVal.hisLevel = [dbrt.Level.HisLevel.Normal, dbrt.Level.HisLevel.Medium, dbrt.Level.HisLevel.Premium]
         returnVal.classState = Parse.parseClassState(dbrt.State)
         res.send(returnVal)
+    })
+
+    app.post('/adm/get-sys-acc-state', async (req, res) => {
+        let returnVal = {};
+        returnVal.total = await User.collection(DBMS.ClientAuthCollection).find().count()
+        returnVal.new = await User.collection(DBMS.ClientInfoCollection).find(
+            {
+                "DateIn": new Date().toISOString().substring(0, 10)
+            }
+        ).count()
+        returnVal.expire = await User.collection(DBMS.ClientInfoCollection).find(
+            {
+                "State": 3
+            }
+        ).count()
+        res.send(returnVal);
+    })
+
+    app.post('/admin/get-account-development-dashboard', async (req, res) => {
+        let DayStart = Parse.parseDateStart(req.body.dashboardType)
+        let returnVal = await User.collection(DBMS.ClientInfoCollection).aggregate(
+            [
+                {$match: {DateIn: {$gt: DayStart[0]}}},
+                {$group: {_id: "$DateIn",count: { $sum: 1 }}},
+                {$sort: {_id: 1}}
+            ]
+        ).toArray()
+        res.send({
+            data: Parse.parseDateDash(returnVal,DayStart[0]),
+            labels: DayStart[1]
+        })
     })
 }

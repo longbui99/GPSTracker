@@ -1,7 +1,5 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const Config = require('../../Config/GConfig')
-const Hash = require('../AuthSecure/Hash.js')
-const DBMS = require('../../config/DBMS.json')
 const AuthFunction = require('../AuthFunction/AuthFunction')
 
 

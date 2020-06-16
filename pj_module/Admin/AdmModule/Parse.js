@@ -95,7 +95,6 @@ exports.parseDateDash = function (lisst, DayStart) {
             index++;
             if (index < listSize)
                 compareValue = 100 * (parseInt(lisst[index]._id.substring(5, 7))) + parseInt(lisst[index]._id.substring(8, 10))
-            // console.log(parseInt(lisst[index]._id.substring(9,10)))
         }
 
 

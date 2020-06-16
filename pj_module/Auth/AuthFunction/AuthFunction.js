@@ -165,7 +165,7 @@ function GoogleAddNewClient (User, profile, ObjectId) {
         Fname: profile.given_name,
         Lname: profile.family_name,
         Email: profile.email,
-        Contact:"+840000000000",
+        Contact:"+84000000000",
         Balance:0,
         DateIn: Dat,
         LastAccess:Dat,

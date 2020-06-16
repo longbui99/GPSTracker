@@ -39,7 +39,7 @@ exports.parseDateStart = function (dashboardType, displayType) {
             for (let i = 1; i <= nowTime.getDate(); i++) {
                 listState.push(i + "/" + month);
             }
-            nowTime.setDate(0);
+            nowTime.setDate(1);
         }
         else {
             let nowMonth = nowTime.getMonth() + 1;
@@ -82,10 +82,10 @@ exports.parseDateDash = function (lisst, DayStart) {
 
     let compareValue = 100 * (parseInt(lisst[index]._id.substring(5, 7))) + parseInt(lisst[index]._id.substring(8, 10))
 
-    console.log("Start:\t", monthStart, dayStart)
-    console.log("End:\t", endMonth, endDate)
-    console.log("EOM:\t", endOfMonth)
-    console.log("CPV:\t", compareValue)
+    // console.log("Start:\t", monthStart, dayStart)
+    // console.log("End:\t", endMonth, endDate)
+    // console.log("EOM:\t", endOfMonth)
+    // console.log("CPV:\t", compareValue)
     while (!(loopDay == endDate && loopMonth == endMonth)) {
         if (index == listSize || (compareValue != (loopDay + 100 * loopMonth))) {
             returnVal.push(0)

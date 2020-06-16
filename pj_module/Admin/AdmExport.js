@@ -66,10 +66,10 @@ module.exports = function (app, User, ObjectId) {
                 {$sort: {_id: 1}}
             ]
         ).toArray()
-        console.log({
-            data: Parse.parseDateDash(returnVal,DayStart[0]).length,
-            labels: DayStart[1].length
-        })  
+        // console.log({
+        //     data: Parse.parseDateDash(returnVal,DayStart[0]).length,
+        //     labels: DayStart[1].length
+        // })  
         res.send({
             data: Parse.parseDateDash(returnVal,DayStart[0]),
             labels: DayStart[1]

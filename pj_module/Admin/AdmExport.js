@@ -58,7 +58,7 @@ module.exports = function (app, User, ObjectId) {
     })
 
     app.post('/admin/get-account-development-dashboard', async (req, res) => {
-        let DayStart = Parse.parseDateStart(req.body.dashboardType)
+        let DayStart = Parse.parseDateStart(req.body.dashboardType, req.body.displayType)
         let returnVal = await User.collection(DBMS.ClientInfoCollection).aggregate(
             [
                 {$match: {DateIn: {$gt: DayStart[0]}}},
@@ -66,9 +66,17 @@ module.exports = function (app, User, ObjectId) {
                 {$sort: {_id: 1}}
             ]
         ).toArray()
+        console.log({
+            data: Parse.parseDateDash(returnVal,DayStart[0]).length,
+            labels: DayStart[1].length
+        })  
         res.send({
             data: Parse.parseDateDash(returnVal,DayStart[0]),
             labels: DayStart[1]
         })
+    })
+
+    app.get('/admin*',(req,res)=>{
+        res.render('admin')
     })
 }

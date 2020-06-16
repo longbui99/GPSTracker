@@ -14,51 +14,97 @@ exports.parseDate = function (Da) {
     return (Dat - Date.parse(Da));
 
 }
-exports.parseDateStart = function (dashboardType) {
+exports.parseDateStart = function (dashboardType, displayType) {
     if (dashboardType == 0) {
         let nowTime = new Date();
         let dayIndex = nowTime.getDay();
-        dayIndex = (dayIndex != 0)?dayIndex:7;
-        // nowTime = nowTime.getTime();
-        nowTime.setDate(nowTime.getDate()-dayIndex)
+        dayIndex = (dayIndex != 0) ? dayIndex : 7;
+        dayIndex = (displayType == 0) ? dayIndex : 7;
+        listState = []
+        for (let i = 0, j = nowTime.getDay(); i < dayIndex; i++, j--) {
+            if (j < 0) j = 6
+            listState.push(State.DashBoard.Week[j])
+        }
+        nowTime.setDate(nowTime.getDate() - dayIndex+1)
         return [
-            nowTime.toISOString().substring(0,10),
-            State.DashBoard.Week.slice(0,dayIndex)
+            nowTime.toISOString().substring(0, 10),
+            listState.reverse()
         ]
     }
-    else if(dashboardType == 1){
+    else if (dashboardType == 1) {
         let nowTime = new Date()
-        let month = nowTime.getMonth()
         listState = []
-        for(let i = 1; i <= nowTime.getDate(); i++){
-            listState.push(i+"/"+month)
+        if (displayType == 0) {
+            let month = nowTime.getMonth() + 1;
+            for (let i = 1; i <= nowTime.getDate(); i++) {
+                listState.push(i + "/" + month);
+            }
+            nowTime.setDate(0);
         }
-        nowTime.setDate(0)
-        return[
-            nowTime.toISOString().substring(0,10),
+        else {
+            let nowMonth = nowTime.getMonth() + 1;
+            nowTime.setDate(nowTime.getDate() - 30);
+            let startdate = nowTime.getDate();
+            let pastMonth = nowTime.getMonth() + 1;
+            let endMonthDate = new Date(nowTime.getFullYear(), nowTime.getMonth() + 1, 0).getDate()
+            for (let i = 0, j = startdate, month = pastMonth; i < 31; i++, j++) {
+                listState.push(j + "/" + month)
+                if (j === endMonthDate) {
+                    month = nowMonth
+                    j = 0
+                }
+            }
+        }
+        return [
+            nowTime.toISOString().substring(0, 10),
             listState
         ]
-
     }
-    else if(dashboardType == 2){
-        
+    else if (dashboardType == 2) {
+        return ["",]
     }
 }
-exports.parseDateDash = function(listData, DayStart){
-    let peerDate = new Date(DayStart)
-    let nowDate = new Date().toISOString().substring(0,10)
-    let returnVal = [], data = "",indexListData = 0, len = listData.length;
-    while(data != nowDate){
-        // console.log("data;",data)
-        peerDate.setDate(peerDate.getDate()+1)
-        data = peerDate.toISOString().substring(0,10)
-        if(indexListData == len ||  listData[indexListData]._id != data ){
+exports.parseDateDash = function (lisst, DayStart) {
+    if (lisst.length == 0) return []
+    let t = DayStart.split('-')
+    let dayStart = parseInt(t[2])
+    let monthStart = parseInt(t[1])
+
+    let nowDate = new Date()
+    let Year = nowDate.getFullYear()
+    let endDate = nowDate.getDate() + 1;
+    let endMonth = nowDate.getMonth() + 1;
+    let loopDay = dayStart, loopMonth = monthStart;
+    let endOfMonth = new Date(Year, monthStart, 0).getDate()
+
+    let index = 0, listSize = lisst.length;
+    let returnVal = []
+
+    let compareValue = 100 * (parseInt(lisst[index]._id.substring(5, 7))) + parseInt(lisst[index]._id.substring(8, 10))
+
+    console.log("Start:\t", monthStart, dayStart)
+    console.log("End:\t", endMonth, endDate)
+    console.log("EOM:\t", endOfMonth)
+    console.log("CPV:\t", compareValue)
+    while (!(loopDay == endDate && loopMonth == endMonth)) {
+        if (index == listSize || (compareValue != (loopDay + 100 * loopMonth))) {
             returnVal.push(0)
         }
-        else{
-            returnVal.push(listData[indexListData].count)
-            indexListData++;
+        else {
+            returnVal.push(lisst[index].count)
+            index++;
+            if (index < listSize)
+                compareValue = 100 * (parseInt(lisst[index]._id.substring(5, 7))) + parseInt(lisst[index]._id.substring(8, 10))
+            // console.log(parseInt(lisst[index]._id.substring(9,10)))
         }
+
+
+        if (loopDay == endOfMonth) {
+            loopMonth++;
+            endOfMonth = new Date(Year, loopMonth, 0).getDate()
+            loopDay = 0
+        }
+        loopDay++;
     }
     return returnVal
 }

@@ -13,6 +13,6 @@
     "ClassState":["success","info","warning","danger"]
     ,
     "DashBoard":{
-        "Week":["Monday","TuesDay","Wednesday","Thusday","Friday","Saturday","Sunday"]
+        "Week":["Sunday","Monday","TuesDay","Wednesday","Thusday","Friday","Saturday"]
     }
 }

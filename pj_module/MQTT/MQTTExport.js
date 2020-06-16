@@ -54,8 +54,6 @@ exports.initMQTTConnect = async function (User, ObjectId) {
             )
         }
     })
-
-
 }
 exports.publicizeToDevice = async function (deviceID, transferValue) {
     const client = await mqtt.connect(mqttConfig.connectConfig)
@@ -66,7 +64,7 @@ exports.publicizeToDevice = async function (deviceID, transferValue) {
                 client.publish(mqttConfig.NotifyTopic, [
                     {
                         device_id: "LightD",
-                        values: ["255,255"]
+                        values: transferValue
                     }
                 ])
             }

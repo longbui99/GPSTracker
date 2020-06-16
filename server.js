@@ -1,7 +1,7 @@
 const express = require('express');
 const expressSession = require('express-session');
 const bodyParser = require('body-parser');
-const DBMS = require('./pj_module/Config/DBMS.json');
+const DBMS = require('./pj_module/Config/DBMS');
 const app = express();
 const cors = require('cors')
 

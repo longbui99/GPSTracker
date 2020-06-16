@@ -1,4 +1,4 @@
-{
+module.exports = {
     "connectConfig": {
         "host": "137.116.146.177",
         "port": 1883,

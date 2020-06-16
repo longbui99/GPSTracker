@@ -1,6 +1,6 @@
 const mqtt = require('mqtt')
-const mqttConfig = require('../Config/MQTT.json')
-const DBMS = require('../Config/DBMS.json');
+const mqttConfig = require('../Config/MQTT')
+const DBMS = require('../Config/DBMS');
 const Hash = require('js-sha1')
 
 

@@ -1,5 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
-const DBMS = require('../../config/DBMS.json')
+const DBMS = require('../../config/DBMS')
 const Hash = require('../AuthSecure/Hash.js')
 const AuthFunction = require('../AuthFunction/AuthFunction')
 module.exports = (passport, User) => {

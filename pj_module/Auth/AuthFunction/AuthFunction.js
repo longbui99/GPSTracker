@@ -1,5 +1,5 @@
 
-const DBMS = require('../../config/DBMS.json');
+const DBMS = require('../../Config/DBMS');
 const Hash = require('../AuthSecure/Hash')
 
 var User = null

@@ -1,4 +1,4 @@
-const State = require('../../Config/Parse.json')
+const State = require('../../Config/Parse')
 
 exports.parseState = function (state) {
     return State.State[parseInt(state)]

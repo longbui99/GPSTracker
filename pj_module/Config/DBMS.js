@@ -1,4 +1,4 @@
-{
+module.exports = {
     "DatabaseName": "GPSManagement",
     "ClientAuthCollection": "ClientAuthCollection",
     "AdminAuthCollection": "AdminAuthCollection",

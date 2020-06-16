@@ -1,7 +1,7 @@
 
 // app: Server listening request and response to client side
 // User: Database
-const DBMS = require('../Config/DBMS.json')
+const DBMS = require('../Config/DBMS')
 const NodeMailer = 0;
 const AdmFunction = 0;
 const Parse = require('./AdmModule/Parse')

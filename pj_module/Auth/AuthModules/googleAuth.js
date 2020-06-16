@@ -7,8 +7,8 @@ const AuthFunction = require('../AuthFunction/AuthFunction')
 
 module.exports = function (passport, User, ObjectId) {
     passport.use("google", new GoogleStrategy({
-        clientID: Config.ClientID,
-        clientSecret: Config.ClientSecret,
+        clientID: "339588269614-813v39gknlkgphv9v5gt1hgvbks1umli.apps.googleusercontent.com",
+        clientSecret: "GrUnWr7UwbcM5IV0TDhsGxVr",
         callbackURL: "/auth/google/callback"
     },AuthFunction.GoogleStrategy))
 }

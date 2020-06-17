@@ -12,7 +12,8 @@ const DeviceSign = require('./pj_module/Client/DviceSign/DviceSignExport');
 const CustomersProfile = require('./pj_module/Client/ProfileInf/ProfileExport');
 const AdmManagerMain = require('./pj_module/Admin/AdmExport');
 const AuthRequest = require('./pj_module/Auth/AuthExport');
-const MQTTProtocol = require('./pj_module/MQTT/MQTTExport')
+const MQTTProtocol = require('./pj_module/MQTT/MQTTExport');
+const MailModule = require('./pj_module/MailInf/MailExport')
 
 
 // Config server
@@ -49,6 +50,7 @@ client.connect().then(token => {
     CustomersProfile(app,User,ObjectId)
     AdmManagerMain(app,User,ObjectId)
     MQTTProtocol.initMQTTConnect(User,ObjectId)
+    MailModule.initMailServer(app,User,ObjectId)
     // Notification
     console.log('DBMS ready')
 });
@@ -61,4 +63,10 @@ app.get('/', (req,res,next)=>{
       clearInterval(myInterval) 
     }
   },100)
+})
+
+
+app.get('/demo-topic-output/:fist&&:last', (req,res,next)=>{
+  MQTTProtocol.publicizeToDevice("LightD",[req.params.fist,req.params.last])
+  res.send(true)
 })

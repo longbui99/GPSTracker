@@ -7,7 +7,8 @@ const AdmFunction = 0;
 const Parse = require('./AdmModule/Parse')
 
 module.exports = function (app, User, ObjectId) {
-    app.get('/auth/admin-is-loggin', (req, res) => {
+    app.post('/auth/admin-is-loggin', (req, res) => {
+        // console.log(req.isAuthenticated() && !req.body.typePosition)
         res.send(req.isAuthenticated() && !req.body.typePosition)
     })
 

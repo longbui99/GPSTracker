@@ -18,6 +18,7 @@ exports.initMQTTConnect = async function (User, ObjectId) {
     })
 
     client.on('message', async function (topic, message) {
+        console.log(message.toString())
         message = JSON.parse(message.toString())[0]
         let Collection = getCollectionContain(message.device_id)
         // console.log(Collection)
@@ -61,12 +62,15 @@ exports.publicizeToDevice = async function (deviceID, transferValue) {
         client.subscribe(mqttConfig.NotifyTopic, function (err, topic) {
             if (err) console.log(err)
             else {
-                client.publish(mqttConfig.NotifyTopic, [
+                client.publish(mqttConfig.NotifyTopic,
+                JSON.stringify([
                     {
-                        device_id: "LightD",
+                        device_id: "Light",
                         values: transferValue
                     }
                 ])
+                )
+                client.end()
             }
         })
     })

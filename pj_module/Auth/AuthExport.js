@@ -16,7 +16,7 @@ module.exports = function (app, User, ObjectId) {
         passport.authenticate('google', { scope: ['profile', 'email'] }));
 
     app.get('/auth/google/callback',
-        passport.authenticate('google', { failureRedirect: '/login-fail' }),
+        passport.authenticate('google', { failureRedirect: '/google-login-fail' }),
         function (req, res) {
             res.redirect('/login-done');
         });
@@ -30,8 +30,12 @@ module.exports = function (app, User, ObjectId) {
 
     app.post('/auth/adm-requi-log-local',
         passport.authenticate('authAdm', { failureRedirect: '/' }), function (req, res) {
-            res.redirect('http://localhost:3000/admin')
+            res.redirect('/admin')
         })
+
+    app.get('/google-login-fail', (req,res)=>{
+        res.send('<h1>Login Failed, Your email has been already use!</h1>')
+    })
 
     app.get('/login-done', AuthFunction.clientLoginDone)
 

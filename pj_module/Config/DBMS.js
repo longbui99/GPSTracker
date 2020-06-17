@@ -5,5 +5,6 @@ module.exports = {
     "ClientInfoCollection": "ClientInfoCollection",
     "ClientDeviceControl": "ClientDeviceControl",
     "GPSDeviceCollection": "GPSDeviceCollection",
-    "NTFDeviceCollection": "NTFDeviceCollection"
+    "NTFDeviceCollection": "NTFDeviceCollection",
+    "ActionLinkCollection":"ActionLinkCollection"
 }

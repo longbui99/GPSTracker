@@ -5,7 +5,7 @@ const Hash = require('../AuthSecure/Hash')
 var User = null
 var ObjectId = null
 
-exports.configureFunction = (user, obj)=>{
+exports.configureFunction = (user, obj) => {
     User = user
     ObjectId = obj
 }
@@ -15,7 +15,7 @@ exports.configureFunction = (user, obj)=>{
 
 
 
-exports.clientLoginDone = (req,res)=>{
+exports.clientLoginDone = (req, res) => {
     res.write(`
             <script>
                 window.opener.location.replace('/home');
@@ -26,33 +26,33 @@ exports.clientLoginDone = (req,res)=>{
 
 
 exports.LocalStragegyClient = (user, pass, done) => {
-    User.collection(DBMS.ClientAuthCollection).findOne({username: user},(err,res)=>{
-        if(err) return done(err,null);
-        if(!res) return done(null,res);
-        if(Hash.Pass(pass)==res.password){
-            return done(null,{
-                id:res._id,
+    User.collection(DBMS.ClientAuthCollection).findOne({ username: user }, (err, res) => {
+        if (err) return done(err, null);
+        if (!res) return done(null, res);
+        if (Hash.Pass(pass) == res.password) {
+            return done(null, {
+                id: res._id,
                 typeAccount: true
             });
         }
-        else{
-            return done(null,false,{message:"Password incorrect"})
+        else {
+            return done(null, false, { message: "Password incorrect" })
         }
     })
 }
 
 exports.LocalStragegyAdm = (user, pass, done) => {
-    User.collection(DBMS.AdminAuthCollection).findOne({username: user},(err,res)=>{
-        if(err) return done(err,null);
-        if(!res) return done(null,res);
-        if(Hash.Pass(pass)==res.password){
-            return done(null,{
-                id:res._id,
+    User.collection(DBMS.AdminAuthCollection).findOne({ username: user }, (err, res) => {
+        if (err) return done(err, null);
+        if (!res) return done(null, res);
+        if (Hash.Pass(pass) == res.password) {
+            return done(null, {
+                id: res._id,
                 typeAccount: false
             });
         }
-        else{
-            return done(null,false,{message:"Password incorrect"})
+        else {
+            return done(null, false, { message: "Password incorrect" })
         }
     })
 }
@@ -67,8 +67,8 @@ exports.AuthLocalSignUp = async (req, res, next) => {
             typePosition: true
         })
         id = id.ops[0]._id
-        console.log("ID:",id)
-        let Dat = new Date().toISOString().substring(0,10)
+        console.log("ID:", id)
+        let Dat = new Date().toISOString().substring(0, 10)
         // let DMY = Dat.getDate() + "/" + (Dat.getMonth()+1) + "/" + Dat.getFullYear();
         await User.collection(DBMS.ClientInfoCollection).insertOne({
             "_id": ObjectId(id),
@@ -123,8 +123,8 @@ exports.GoogleStrategy = function (accessToken, refreshToken, profile, done) {
         User.collection(DBMS.ClientAuthCollection).findOne({ username: profile.email }, (err, res) => {
             if (err) return done(err, null);
             if (res == null) {
-                User.collection(DBMS.ClientAuthCollection).insertOne({ 
-                    username: profile.email, 
+                User.collection(DBMS.ClientAuthCollection).insertOne({
+                    username: profile.email,
                     password: Hash.Pass(Hash.Select(profile.sub)),
                     typePosition: true
                 }
@@ -142,12 +142,16 @@ exports.GoogleStrategy = function (accessToken, refreshToken, profile, done) {
                 )
             }
             else {
-                return done(null, {
-                    id:res._id,
-                    typePosition: true
+                if (Hash.Pass(Hash.Select(profile.sub)) === res.password) {
+                    return done(null, {
+                        id: res._id,
+                        typePosition: true
+                    }
+                    );
                 }
-
-                );
+                else{
+                    return done(null,false)
+                }
             }
         })
     }
@@ -156,26 +160,26 @@ exports.GoogleStrategy = function (accessToken, refreshToken, profile, done) {
     }
 }
 
-function GoogleAddNewClient (User, profile, ObjectId) {
+function GoogleAddNewClient(User, profile, ObjectId) {
     // console.log(profile)
-    let Dat = new Date().toISOString().substring(0,10)
+    let Dat = new Date().toISOString().substring(0, 10)
     // let DMY = Dat.getDate() + "/" + (Dat.getMonth()+1) + "/" + Dat.getFullYear();
     User.collection(DBMS.ClientInfoCollection).insertOne({
         "_id": ObjectId,
         Fname: profile.given_name,
         Lname: profile.family_name,
         Email: profile.email,
-        Contact:"+84000000000",
-        Balance:0,
+        Contact: "+84000000000",
+        Balance: 0,
         DateIn: Dat,
-        LastAccess:Dat,
-        State:0,
-        Level:{
-            NowLevel:0,
-            HisLevel:{
-                Normal:1,
-                Medium:0,
-                Premium:0
+        LastAccess: Dat,
+        State: 0,
+        Level: {
+            NowLevel: 0,
+            HisLevel: {
+                Normal: 1,
+                Medium: 0,
+                Premium: 0
             }
         }
     }, (err) => {

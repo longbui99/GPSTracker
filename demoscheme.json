@@ -29,6 +29,12 @@
             }
         }
     },
+    "ActionLinkCollection":{
+        "ID":"123456789...",
+        "Route":"dsadasdsa",
+        "Time":"202001"
+    }
+    ,
     "ClientDeviceControll":{
         "OwnerID":"123456879...",
         "DeviceGroupControll":[

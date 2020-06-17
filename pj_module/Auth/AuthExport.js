@@ -9,8 +9,8 @@ module.exports = function (app, User, ObjectId) {
 
     googleAuth(passport, User, ObjectId);
     localAuth(passport, User);
-    
-    AuthFunction.configureFunction(User,ObjectId)
+
+    AuthFunction.configureFunction(User, ObjectId)
 
     app.get('/auth/google',
         passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -21,19 +21,30 @@ module.exports = function (app, User, ObjectId) {
             res.redirect('/login-done');
         });
 
-    app.post('/auth/require-log-local-sign',
-        passport.authenticate('authClient', { failureRedirect: '/' }), function (req, res) {
-            res.send(true)
-        })
-    app.get('/auth/require-log-local-sign',
-    passport.authenticate('authClient', { failureRedirect: '/' , successRedirect:"/home"}))
+    // app.post('/auth/require-log-local-sign',
+    //     passport.authenticate('authClient', { failureMessage: '/' }), function (req, res) {
+    //         res.send(true)
+    //     })
+
+    app.post('/auth/require-log-local-sign', function (req, res, next) {
+        passport.authenticate('authClient', function (err, user, info) {
+            if (err) { return next(err); }
+            if (!user) { return res.send(false) }
+            req.logIn(user, function (err) {
+                if (err) { return next(err); }
+                return res.send(true);
+            });
+        })(req, res, next);
+    });
+    // app.get('/auth/require-log-local-sign',
+    // passport.authenticate('authClient', { failureRedirect: '/' , successRedirect:"/home"}))
 
     app.post('/auth/adm-requi-log-local',
         passport.authenticate('authAdm', { failureRedirect: '/' }), function (req, res) {
             res.redirect('/admin')
         })
 
-    app.get('/google-login-fail', (req,res)=>{
+    app.get('/google-login-fail', (req, res) => {
         res.send('<h1>Login Failed, Your email has been already use!</h1>')
     })
 
@@ -41,7 +52,7 @@ module.exports = function (app, User, ObjectId) {
 
     app.get('/auth/adm/:user&-&:pass', AuthFunction.adminLoginFunc)
 
-    app.post('/auth/require-log-local-sign-up', AuthFunction.AuthLocalSignUp )
+    app.post('/auth/require-log-local-sign-up', AuthFunction.AuthLocalSignUp)
 
     passport.serializeUser(function (user, done) {
         return done(null, user);

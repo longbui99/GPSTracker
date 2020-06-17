@@ -29,7 +29,10 @@ exports.LocalStragegyClient = (user, pass, done) => {
     User.collection(DBMS.ClientAuthCollection).findOne({ username: user }, (err, res) => {
         if (err) return done(err, null);
         if (!res) return done(null, res);
-        if (Hash.Pass(pass) == res.password) {
+        if (Hash.Pass(pass) === res.password) {
+            // console.log(Hash.Pass(pass))
+            // console.log(res.password)
+            // console.log(Hash.Pass(pass) === res.password)
             return done(null, {
                 id: res._id,
                 typeAccount: true
@@ -67,7 +70,7 @@ exports.AuthLocalSignUp = async (req, res, next) => {
             typePosition: true
         })
         id = id.ops[0]._id
-        console.log("ID:", id)
+        // console.log("ID:", id)
         let Dat = new Date().toISOString().substring(0, 10)
         // let DMY = Dat.getDate() + "/" + (Dat.getMonth()+1) + "/" + Dat.getFullYear();
         await User.collection(DBMS.ClientInfoCollection).insertOne({
@@ -90,7 +93,7 @@ exports.AuthLocalSignUp = async (req, res, next) => {
             }
         })
         res.send(true)
-        console.log("has been sent")
+        // console.log("has been sent")
     }
     else {
         res.send(false)

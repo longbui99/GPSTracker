@@ -77,8 +77,12 @@ function localSIAuth() {
                 password: document.getElementById('si-password').value,
             }
         }).done(res => {
+            console.log(res)
             if (res) {
                 window.location.replace('/home')
+            }
+            else{
+                alert("Login failed")
             }
         })
     }

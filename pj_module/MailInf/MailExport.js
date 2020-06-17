@@ -46,7 +46,8 @@ exports.initMailServer = function (app, User, ObjectId) {
             upsert: true
         }
         )
-        sendMail(res, Parse.RenewMail("bui.plong.99@gmail.com",output))
+        console.log(req.body)
+        sendMail(res, Parse.RenewMail(req.body.email,output))
     })
 
 

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <!-- JS, Popper.js, and jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+</head>
+
+<body>
+    <p id="user-id-socket" style="display: none;"><%= id %></p>
+    <div class="container" style="margin-top: 70px;">
+        <div>
+            <!-- <h3>Time to next update: <span id="time" class="time" class="badge badge-danger">30</span></h3> -->
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-6" style="border-right: solid 1px black; padding-right: 50px;">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button id="coordinatebtn" class="input-group-text text-info">Coordinates</button>
+                    </div>
+                    <input id="logitude" type="text" placeholder="Longitude" aria-label="First name"
+                        class="form-control">
+                    <input id="latitude" type="text" placeholder="Latitude" aria-label="Last name" class="form-control">
+                </div>
+                <br>
+                <div class="input-group mb-3">
+                    <input id="radius" type="text" class="form-control" placeholder="Radius"
+                        aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                        <button id="btn-radius" class="btn btn-outline-secondary" type="button"
+                            id="button-addon2">Button</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div>
+                    <p class="GPS">Now Infor: <span id="GPSInfor">Topic/GPS</span> </p>
+                    <p>Longitude: <span id="Longitude">100</span></p>
+                    <p>Latitude: <span id="Latitude">99</span> </p>
+                    <p>State: <span id="State">True</span> </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    const socket = io.connect('http://localhost:5000')
+
+
+    let countTime = 0
+    let Longitude = document.getElementById('Longitude')
+    let Latitude = document.getElementById('Latitude')
+    let State = document.getElementById('State')
+    let IpLong = document.getElementById('logitude')
+    let IpLat = document.getElementById('latitude')
+
+    $.ajax({
+        url: '/cli-main/get-device-information',
+        type: "POST"
+    }).done(result => {
+        result = result[0]
+        document.getElementById('GPSInfor').textContent = result._id;
+        // document.getElementById('GPSInfor').id = result._id;
+        // IpLong.value = result.DeviceData.Longitude
+        // IpLat.value = result.DeviceData.Latitude
+        Longitude.textContent = result.DeviceData.Longitude;
+        Latitude.textContent = result.DeviceData.Latitude;
+        State.textContent = result.DeviceStatus;
+    })
+
+    
+
+    document.addEventListener('DOMContentLoaded', function () {
+        socket.emit('sign-in-socket', document.getElementById('user-id-socket').textContent)
+        document.getElementById('user-id-socket').remove()
+    });
+
+
+    // console.log(socket.r.id)
+    socket.on('emit-new-gps', data => {
+        // State.textContent = data.gpsID;
+        Longitude.textContent = data.data[0];
+        Latitude.textContent = data.data[1];
+    })
+
+    socket.on('update-status-GPS', data => {
+        console.log(data)
+        State.textContent = data.status
+    })
+
+    $('#coordinatebtn').click(e => {
+        console.log("CLOC")
+        $.ajax({
+            url: "/cli-main/update-gps-coordinates",
+            type: "POST",
+            data: {
+                GPSID: $('#GPSInfor').text(),
+                Long:IpLong.value,
+                Lat:IpLat.value
+            }
+        }).done(res=>{
+                console.log(res)
+            })
+    })
+
+    $('#btn-radius').click(e => {
+        $.ajax({
+            type: "POST",
+            url: "/cli-main/update-gps-radius",
+            data: {
+                GPSID: $('#GPSInfor').text(),
+                radius: $('#radius').val()
+            }
+        }).done(res => {
+            console.log(res)
+        })
+    })
+
+</script>
+
+</html>

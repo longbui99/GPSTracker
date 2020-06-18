@@ -1,79 +1,93 @@
 const mqtt = require('mqtt')
 const mqttConfig = require('../Config/MQTT')
 const DBMS = require('../Config/DBMS');
-const Hash = require('js-sha1')
+const Hash = require('js-sha1');
+const Analyze = require('../AnalyzeCondition/AnalyzeExport')
 
 
-function getCollectionContain(DeviceType) {
-    return (DeviceType == 'GPS') ? DBMS.GPSDeviceCollection : DBMS.NTFDeviceCollection;
-}
 
-exports.initMQTTConnect = async function (User, ObjectId) {
-    const client = await mqtt.connect(mqttConfig.connectConfig)
+// let listTopicOnline = []
+var client = null
+exports.initMQTTConnect = async function (io, User, ObjectId) {
+    client = await mqtt.connect(mqttConfig.connectConfig)
 
     client.on('connect', function () {
         client.subscribe(mqttConfig.GpsTopic, function (err, topic) {
             if (err) console.log(err)
-        })
-    })
+            client.on('message', async function (topic, message) {
+                console.log(topic)
+                if (topic == "Topic/GPS") {
+                    // let Collection = getCollectionContain(message.device_id)
+                    message = JSON.parse(message.toString())
+                    // console.log(message)
+                    let listGPSChange = []
+                    let isUpdate = false
+                    message.forEach(async element => {
+                        let DVID = Hash(element.device_id).substring(0, 12)
+                        let id = ObjectId(DVID)
+                        let returnVal = await User.collection(DBMS.GPSDeviceCollection).findOne(
+                            { _id: id }
+                        )
 
-    client.on('message', async function (topic, message) {
-        console.log(message.toString())
-        message = JSON.parse(message.toString())[0]
-        let Collection = getCollectionContain(message.device_id)
-        // console.log(Collection)
-        // console.log(message)
-        let DVId = Hash(message.device_id).substring(0,12)
+                        if (returnVal == null) {
+                            User.collection(DBMS.GPSDeviceCollection).insertOne({
+                                _id: id,
+                                DeviceStatus: 0,
+                                DeviceOwnerID: null,
+                                DeviceDateIn: new Date().toISOString().substring(0, 10),
+                                DeviceData: {
+                                    Longitude: (element.values[0]),
+                                    Latitude: (element.values[1])
+                                }
+                            })
+                        } else {
+                            await User.collection(DBMS.GPSDeviceCollection).updateOne({
+                                _id: id,
+                                $or: [
+                                    { "DeviceData.Longitude": { $ne: element.values[0] } },
+                                    { "DeviceData.Latitude": { $ne: element.values[1] } }]
+                            }
+                                ,
+                                {
+                                    $set: {
+                                        DeviceData: {
+                                            Longitude: (element.values[0]),
+                                            Latitude: (element.values[1])
+                                        }
+                                    }
+                                }
+                                , (err, res) => {
+                                    if (res.modifiedCount == 1) {
+                                        isUpdate = true
+                                        io.to(returnVal.DeviceOwnerID).emit('emit-new-gps', {
+                                            gpsID: id,
+                                            data: [element.values[0], element.values[1]]
+                                        })
+                                        listGPSChange.push({
+                                            GPSID: id,
+                                            data: [element.values[0], element.values[1]],
+                                        })
+                                    }
+                                }
+                            )
+                        }
 
-        let returnVal = await User.collection(Collection).findOne(
-            { _id: ObjectId(DVId) }
-        )
-        // console.log(returnVal)
-        if (returnVal == null) {
-            User.collection(Collection).insertOne({
-                _id: ObjectId(DVId),
-                DeviceStatus: 0,
-                DeviceOwnerID: null,
-                DeviceDateIn: new Date().toISOString().substring(0, 10),
-                DeviceData: {
-                    Longitude: message.values[0],
-                    Latitude: message.values[1]
+                    })
+                    if(isUpdate)
+                        Analyze.AnalyzesSystem()
                 }
             })
-        } else {
-            User.collection(Collection).updateOne({
-                _id: ObjectId(DVId)
-            },
-                {
-                    $set: {
-                        DeviceData: {
-                            Longitude: message.values[0],
-                            Latitude: message.values[1]
-                        }
-                    }
-                }
-            )
-        }
-    })
-}
-exports.publicizeToDevice = async function (deviceID, transferValue) {
-    const client = await mqtt.connect(mqttConfig.connectConfig)
-    client.on('connect', function () {
-        client.subscribe(mqttConfig.NotifyTopic, function (err, topic) {
-            if (err) console.log(err)
-            else {
-                client.publish(mqttConfig.NotifyTopic,
-                JSON.stringify([
-                    {
-                        device_id: "Light",
-                        values: transferValue
-                    }
-                ])
-                )
-                client.end()
-            }
         })
     })
+
 }
-
-
+exports.publicizeToDevice = async function (deviceID) {
+    client.publish("Topic/Light",
+    JSON.stringify([
+        {
+            device_id: "Light",
+            values: ["255", "255"]
+        }
+    ])
+)
+}

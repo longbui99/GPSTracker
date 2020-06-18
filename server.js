@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const DBMS = require('./pj_module/Config/DBMS');
 const app = express();
 const cors = require('cors')
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 
 
 // import modules implementation
@@ -14,9 +16,10 @@ const AdmManagerMain = require('./pj_module/Admin/AdmExport');
 const AuthRequest = require('./pj_module/Auth/AuthExport');
 const MQTTProtocol = require('./pj_module/MQTT/MQTTExport');
 const MailModule = require('./pj_module/MailInf/MailExport')
+const RLProtocol = require('./pj_module/RealTime/RealTimeExport')
+const AnalyzeFunc = require('./pj_module/AnalyzeCondition/AnalyzeExport')
 
-
-// Config server
+// Config server  
 app.use(cors())
 app.use(express.static('./pblic'));
 
@@ -25,48 +28,65 @@ app.set('views', './pblic/views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(expressSession({
-    secret: 'mySecretKey',
-    cookie: {
-        maxAge: 1000 * 60 * 100
-    }
+  secret: 'mySecretKey',
+  cookie: {
+    maxAge: 1000 * 60 * 100
+  }
 }));
 const PORT = process.env.PORT || 5000;
-app.listen(PORT);
+server.listen(PORT);
 
 // Config database
 const mongodb = require('./pj_module/Dbs/mongoDB.js');
+const { session } = require('passport');
 
 const client = mongodb.client;
 const ObjectId = mongodb.ObjectId;
 var User = null;
 
-client.connect().then(token => {
-    User = token.db(DBMS.DatabaseName);
 
-    // Config all dbms
-    AuthRequest(app,User,ObjectId)
-    DeviceMain(app,User,ObjectId)
-    DeviceSign(app,User,ObjectId)
-    CustomersProfile(app,User,ObjectId)
-    AdmManagerMain(app,User,ObjectId)
-    MQTTProtocol.initMQTTConnect(User,ObjectId)
-    MailModule.initMailServer(app,User,ObjectId)
-    // Notification
-    console.log('DBMS ready')
+
+
+
+client.connect().then(token => {
+  User = token.db(DBMS.DatabaseName);
+
+  // Config all dbms
+  AuthRequest(app, User, ObjectId)
+  DeviceMain(app, User, ObjectId)
+  DeviceSign(app, User, ObjectId)
+  CustomersProfile(app, User, ObjectId)
+  AdmManagerMain(app, User, ObjectId)
+  MailModule.initMailServer(app, User, ObjectId)
+  RLProtocol(io,User,ObjectId)
+  MQTTProtocol.initMQTTConnect(io,User, ObjectId)
+  AnalyzeFunc.Init(app,User,ObjectId,io)
+  AnalyzeFunc.AnalyzesSystem()
+  // Notification
+  app.get("/home", function (req, res) {
+
+    res.render('demoPage',{id:req.user.id})
+  });
+
+
+  console.log('DBMS ready')
 });
 
 
-app.get('/', (req,res,next)=>{
-  let myInterval = setInterval(()=>{
-    if(User != null){
+
+
+app.get('/', (req, res, next) => {
+  let myInterval = setInterval(() => {
+    if (User != null) {
       res.render("publicPage")
-      clearInterval(myInterval) 
+      clearInterval(myInterval)
     }
-  },100)
+  }, 100)
 })
 
 
-app.get('/demo-topic-output/:fist&&:last', (req,res,next)=>{
-  MQTTProtocol.publicizeToDevice("LightD",[req.params.fist,req.params.last])
+app.get('/demo-topic-output/:fist&&:last', (req, res, next) => {
+  MQTTProtocol.publicizeToDevice("LightD", [req.params.fist, req.params.last])
   res.send(true)
 })
+

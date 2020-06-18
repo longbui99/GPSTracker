@@ -35,20 +35,17 @@
         "Time":"202001"
     }
     ,
-    "ClientDeviceControll":{
+    "ClientDeviceControl":{
         "OwnerID":"123456879...",
-        "DeviceGroupControll":[
-            {
-                "GPSID":"1999",
-                "GPSName":"First GPS",
-                "InformID":"2000",
-                "InformName":"Inform"
-            },
-            {
-            },
-            {
-            }
-        ]
+        "GPSID":"1999",
+        "GPSName":"First GPS",
+        "InformID":"2000",
+        "InformName":"Inform",
+        "UserSetup":{
+            "Long":"0",
+            "Lat":"1",
+            "Radius":1
+        }
     }
     ,
     "GPSDeviceScheme":{
@@ -60,6 +57,7 @@
             "Longitude":"107.3",
             "Latitude":"103.7"
         }
+
     },
     "NotificationDeviceScheme":{
         "DeviceID":"2000",

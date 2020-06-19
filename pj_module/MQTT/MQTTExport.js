@@ -15,7 +15,7 @@ exports.initMQTTConnect = async function (io, User, ObjectId) {
         client.subscribe(mqttConfig.GpsTopic, function (err, topic) {
             if (err) console.log(err)
             client.on('message', async function (topic, message) {
-                console.log(topic)
+                // console.log(topic)
                 if (topic == "Topic/GPS") {
                     // let Collection = getCollectionContain(message.device_id)
                     message = JSON.parse(message.toString())

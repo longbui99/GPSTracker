@@ -1,5 +1,6 @@
+const Domain = require('../../Config/DomainRoute')
 exports.RenewMail = function(recieveMail, output){
-    let linkHref = 'http://localhost:5000/cli/renew-password-decrypt/' + output;
+    let linkHref = Domain.heroku+'/cli/renew-password-decrypt/' + output;
     return {
         from: 'Azbot-IotSystem',
         to: recieveMail,

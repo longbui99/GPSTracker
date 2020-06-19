@@ -76,16 +76,19 @@ exports.initMQTTConnect = async function (io, User, ObjectId) {
                     if(isUpdate)
                         Analyze.AnalyzesSystem()
                 }
+                else if(topic == "Topic/Light"){
+
+                }
             })
         })
     })
 
 }
 exports.publicizeToDevice = async function (deviceID) {
-    client.publish("Topic/Light",
+    client.publish(mqttConfig.NotifyTopic,
     JSON.stringify([
         {
-            device_id: "Light",
+            device_id: "LightD",
             values: ["255", "255"]
         }
     ])

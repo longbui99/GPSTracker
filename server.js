@@ -83,10 +83,3 @@ app.get('/', (req, res, next) => {
     }
   }, 100)
 })
-
-
-app.get('/demo-topic-output/:fist&&:last', (req, res, next) => {
-  MQTTProtocol.publicizeToDevice("LightD", [req.params.fist, req.params.last])
-  res.send(true)
-})
-

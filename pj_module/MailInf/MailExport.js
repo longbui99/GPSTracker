@@ -105,7 +105,3 @@ exports.initMailServer = function (app, User, ObjectId) {
 }
 exports.sendMail = sendMail
 
-
-// let output = "5ee4796f995f5OIMON9dgnwxWcmd9eQWkhy50EhBHVCfCszmKmOFfgEvP2EM6YVzLrg=="
-// let decrypt = AESCrypto.decrypt(output.substring(0,13),output.substring(13))
-// console.log(decrypt)

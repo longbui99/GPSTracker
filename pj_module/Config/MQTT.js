@@ -8,5 +8,5 @@ module.exports = {
         // "password": "Hcmut_CSE_2020"
     },
     "GpsTopic":"Topic/GPS",
-    "NotifyTopic":"Topic/Light"
+    "NotifyTopic":"Topic/LightD"
 }

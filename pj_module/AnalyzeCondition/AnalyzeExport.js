@@ -8,11 +8,10 @@ exports.Init = function (app, Users, ObjectIds, ios) {
     User = Users
     ObjectId = ObjectIds
     io = ios
-    app.post('/cli-main/get-device-information', (req, res) => {
+    app.post('/cli-main/get-devices-gps-information', (req, res) => {
         Users.collection(DBMS.GPSDeviceCollection).find({
             DeviceOwnerID: req.user.id
         }, { projection: { DeviceStatus: 1, DeviceData: 1 } }).toArray(function (err, response) {
-            // console.log(response)
             // console.log(response)
             res.send(response)
         })
@@ -25,7 +24,7 @@ exports.Init = function (app, Users, ObjectIds, ios) {
         },
             {
                 $set: {
-                    Radius: parseInt(req.body.radius)
+                    Radius: parseInt(req.body.Radius)
                 }
             }
         )
@@ -41,7 +40,7 @@ exports.Init = function (app, Users, ObjectIds, ios) {
             GPSID:req.body.GPSID
         },{
             $set: {
-                Data: [parseInt(req.body.Long),parseInt(req.body.Lat)]
+                Data: [parseFloat(req.body.Long),parseFloat(req.body.Lat)]
             }
         }
         )
@@ -68,9 +67,6 @@ function calculatedistance(lon1, lat1, lon2, lat2) {
 }
 
 exports.AnalyzesSystem = async function (listGPS = null) {
-    // if (listGPS == null) {
-    //     listGPS = await User.collection(DBMS.GPSDeviceCollection).find({}, { projection: { DeviceOwnerID: 1, DeviceData: 1 } }).toArray()
-    // }
 
     let listUserControl = await User.collection(DBMS.GPSDeviceCollection).aggregate([
         {

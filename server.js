@@ -38,7 +38,6 @@ server.listen(PORT);
 
 // Config database
 const mongodb = require('./pj_module/Dbs/mongoDB.js');
-const { session } = require('passport');
 
 const client = mongodb.client;
 const ObjectId = mongodb.ObjectId;
@@ -58,14 +57,19 @@ client.connect().then(token => {
   CustomersProfile(app, User, ObjectId)
   AdmManagerMain(app, User, ObjectId)
   MailModule.initMailServer(app, User, ObjectId)
-  RLProtocol(io,User,ObjectId)
-  MQTTProtocol.initMQTTConnect(io,User, ObjectId)
-  AnalyzeFunc.Init(app,User,ObjectId,io)
+  RLProtocol(io, User, ObjectId)
+  MQTTProtocol.initMQTTConnect(io, User, ObjectId)
+  AnalyzeFunc.Init(app, User, ObjectId, io)
   AnalyzeFunc.AnalyzesSystem()
   // Notification
   app.get("/home", function (req, res) {
-
-    res.render('demoPage',{id:req.user.id})
+    // console.log(req)
+    if (req.isAuthenticated() && req.user.typeAccount) {
+      res.render('demoPage', { id: req.user.id })
+    }
+    else {
+      res.redirect('/')
+    }
   });
 
 

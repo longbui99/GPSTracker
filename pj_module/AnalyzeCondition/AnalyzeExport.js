@@ -34,7 +34,7 @@ exports.Init = function (app, Users, ObjectIds, ios) {
     })
 
     app.post('/cli-main/update-gps-coordinates',(req,res)=>{
-        console.log(req.body)
+        // console.log(req.body)
         User.collection(DBMS.ClientDeviceControl).updateOne({
             OwnerId: req.user.id,
             GPSID:req.body.GPSID
@@ -46,6 +46,13 @@ exports.Init = function (app, Users, ObjectIds, ios) {
         )
         let tmp = SingleAnalyze(req.body.GPSID, req.user.id)
         res.send(tmp)
+    })
+
+    app.post('/cli-main/get-original-value',async (req,res)=>{
+        let resp = await User.collection(DBMS.ClientDeviceControl).find({
+            OwnerId:req.user.id
+        },{projection:{GPSID:1,GPSName:1,Data:1,Radius:1}}).toArray()
+        res.send(resp)
     })
 }
 
@@ -67,7 +74,6 @@ function calculatedistance(lon1, lat1, lon2, lat2) {
 }
 
 exports.AnalyzesSystem = async function (listGPS = null) {
-
     let listUserControl = await User.collection(DBMS.GPSDeviceCollection).aggregate([
         {
             $addFields: {
@@ -86,16 +92,15 @@ exports.AnalyzesSystem = async function (listGPS = null) {
             }
         }
     ]).toArray();
-
     listUserControl.forEach(element => {
         let distance = calculatedistance(element.DeviceData.Longitude, element.DeviceData.Latitude,
             element.Id[0].Data[0], element.Id[0].Data[1]
         )
         let tmp = 0;
         if (element.Id[0].Radius < distance) {
-            MQTT.publicizeToDevice(element.Id[0].InformId)
             tmp = 1;
         }
+        MQTT.publicizeToDevice(element.Id[0].InformId, tmp,element.DeviceStatus)
         io.to(element.DeviceOwnerID).emit('update-status-GPS', {
             id: element.Id[0].GPSID,
             status: tmp
@@ -105,7 +110,6 @@ exports.AnalyzesSystem = async function (listGPS = null) {
         },
             { $set: { DeviceStatus: tmp } }
         )
-        // console.log(distance)
     })
 
 }
@@ -114,21 +118,19 @@ exports.SingleAnalyze = SingleAnalyze
 async function SingleAnalyze(GPSoptions = null, UserId = null) {
     let DeviceGPSData = await User.collection(DBMS.GPSDeviceCollection).findOne({
         _id: ObjectId(GPSoptions)
-    }, { projection: { DeviceData: 1 } })
+    }, { projection: { DeviceData: 1, DeviceStatus:1 } })
     let UserGPSData = await User.collection(DBMS.ClientDeviceControl).findOne({
         GPSID: GPSoptions
     }, { projection: { Data: 1, InformId: 1, Radius: 1 } })
 
-    // console.log(DeviceGPSData)
-    // console.log(UserGPSData)
 
     let distance = calculatedistance(DeviceGPSData.DeviceData.Longitude, DeviceGPSData.DeviceData.Latitude,
         UserGPSData.Data[0], UserGPSData.Data[1])
     let tmp = 0;
     if(UserGPSData.Radius < distance){
-        MQTT.publicizeToDevice(UserGPSData.InformId)
         tmp=1
     }
+    MQTT.publicizeToDevice(UserGPSData.InformId, tmp, DeviceGPSData.DeviceStatus)
     io.to(UserId).emit('update-status-GPS',{
         id:GPSoptions,
         status:tmp
@@ -138,7 +140,7 @@ async function SingleAnalyze(GPSoptions = null, UserId = null) {
     },
         { $set: { DeviceStatus: tmp } }
     )
-    console.log(distance)
+    // console.log(distance)
     return true;
 
 }

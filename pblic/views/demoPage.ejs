@@ -23,10 +23,6 @@
 <body>
     <p id="user-id-socket" style="display: none;"><%= id %></p>
     <div class="container" style="margin-top: 70px;">
-        <div>
-            <!-- <h3>Time to next update: <span id="time" class="time" class="badge badge-danger">30</span></h3> -->
-        </div>
-        <br>
         <div class="row">
             <div class="col-md-6" style="border-right: solid 1px black; padding-right: 50px;">
                 <div class="input-group">
@@ -68,17 +64,26 @@
     let IpLong = document.getElementById('logitude')
     let IpLat = document.getElementById('latitude')
 
-    // Get origin data, set to orign element
+    // Get original data, set to orign element
     $.ajax({
         url: '/cli-main/get-devices-gps-information',
         type: "POST"
     }).done(result => {
+        console.log(result)
         result = result[0]
         document.getElementById('GPSInfor').textContent = result._id;
         
         Longitude.textContent = result.DeviceData.Longitude;
         Latitude.textContent = result.DeviceData.Latitude;
-        State.textContent = result.DeviceStatus;
+        // State.textContent = result.DeviceStatus;
+        parseState(result.DeviceStatus)
+    })
+
+    $.ajax({
+        url:'/cli-main/get-original-value',
+        type:"POST"
+    }).done(result=>{
+        console.log(result)
     })
 
     // Update gps coordinates, realtime response with socket
@@ -126,6 +131,7 @@
     // Whenever MQTT get new DBMS, if It going to be changed,
     //  emit to user socket online
     socket.on('emit-new-gps', data => {
+        // console.log(data)
         //  data.gpsID; ID of GPS, user for determine what is the GPS change
         Longitude.textContent = data.data[0];
         Latitude.textContent = data.data[1];
@@ -135,9 +141,21 @@
     // Server response to client new status of device
     socket.on('update-status-GPS', data => {
         // id: ID of GPS, string type
-        State.textContent = data.status
+        console.log(data)
+        parseState(data.status)
     })
 
+    function parseState(state){
+        if(state == 1){
+            State.textContent = 'Danger'
+            State.style.color = "red"
+        }
+        else{
+            State.textContent = 'Safe'
+            State.style.color = "Green"
+
+        }
+    }
 
 </script>
 

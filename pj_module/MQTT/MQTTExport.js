@@ -20,15 +20,15 @@ exports.initMQTTConnect = async function (io, User, ObjectId) {
                     // let Collection = getCollectionContain(message.device_id)
                     message = JSON.parse(message.toString())
                     // console.log(message)
-                    let listGPSChange = []
-                    let isUpdate = false
-                    message.forEach(async element => {
-                        let DVID = Hash(element.device_id).substring(0, 12)
+                    let i = 0
+                    for (i; i < message.length; i++) {
+                        // message.forEach(async element => {
+                        let DVID = Hash(message[i].device_id).substring(0, 12)
                         let id = ObjectId(DVID)
                         let returnVal = await User.collection(DBMS.GPSDeviceCollection).findOne(
                             { _id: id }
                         )
-
+                        let data = [parseFloat(message[i].values[0]), parseFloat(message[i].values[1])]
                         if (returnVal == null) {
                             User.collection(DBMS.GPSDeviceCollection).insertOne({
                                 _id: id,
@@ -36,61 +36,72 @@ exports.initMQTTConnect = async function (io, User, ObjectId) {
                                 DeviceOwnerID: null,
                                 DeviceDateIn: new Date().toISOString().substring(0, 10),
                                 DeviceData: {
-                                    Longitude: (element.values[0]),
-                                    Latitude: (element.values[1])
+                                    Longitude: data[0],
+                                    Latitude: data[1]
                                 }
                             })
                         } else {
-                            await User.collection(DBMS.GPSDeviceCollection).updateOne({
+                            let res = await User.collection(DBMS.GPSDeviceCollection).updateOne({
                                 _id: id,
                                 $or: [
-                                    { "DeviceData.Longitude": { $ne: element.values[0] } },
-                                    { "DeviceData.Latitude": { $ne: element.values[1] } }]
+                                    { "DeviceData.Longitude": { $ne: data[0] } },
+                                    { "DeviceData.Latitude": { $ne: data[1] } }]
                             }
                                 ,
                                 {
                                     $set: {
                                         DeviceData: {
-                                            Longitude: (element.values[0]),
-                                            Latitude: (element.values[1])
+                                            Longitude: data[0],
+                                            Latitude: data[1]
                                         }
                                     }
                                 }
-                                , (err, res) => {
-                                    if (res.modifiedCount == 1) {
-                                        isUpdate = true
-                                        io.to(returnVal.DeviceOwnerID).emit('emit-new-gps', {
-                                            gpsID: id,
-                                            data: [element.values[0], element.values[1]]
-                                        })
-                                        listGPSChange.push({
-                                            GPSID: id,
-                                            data: [element.values[0], element.values[1]],
-                                        })
-                                    }
-                                }
                             )
+                            if (res.modifiedCount == 1) {
+                                console.log("OKOK")
+                                io.to(returnVal.DeviceOwnerID).emit('emit-new-gps', {
+                                    gpsID: id,
+                                    data: data
+                                })
+                            }
                         }
 
-                    })
-                    if(isUpdate)
-                        Analyze.AnalyzesSystem()
+                    }
+                    Analyze.AnalyzesSystem()
+                    // let myInterval = setInterval(() => {
+                    //     if (i == message.length) {
+                    //         clearInterval(myInterval)
+                    //     }
+                    // }, 1)
                 }
-                else if(topic == "Topic/Light"){
+                else if (topic == "Topic/LightD") {
 
                 }
             })
         })
     })
-
 }
-exports.publicizeToDevice = async function (deviceID) {
-    client.publish(mqttConfig.NotifyTopic,
-    JSON.stringify([
-        {
-            device_id: "LightD",
-            values: ["255", "255"]
-        }
-    ])
-)
+
+
+exports.publicizeToDevice = async function (deviceID, tmp, status) {
+    if (tmp == 0 && status == 1) {
+        client.publish(mqttConfig.NotifyTopic,
+            JSON.stringify([
+                {
+                    device_id: "LightD",
+                    values: ['0', '0']
+                }
+            ])
+        )
+    }
+    else if(tmp == 1 && status == 0){
+        client.publish(mqttConfig.NotifyTopic,
+            JSON.stringify([
+                {
+                    device_id: "LightD",
+                    values: ['1', '255']
+                }
+            ])
+        )
+    }
 }

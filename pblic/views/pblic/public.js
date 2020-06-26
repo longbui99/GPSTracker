@@ -45,14 +45,27 @@ const signInHtml = `<div class="mt-2 mb-2" id="s-i-cli-ui">
 </div>
 </div>`
 
+function validateEmail(email) {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
+
 function UserChange(self) {
     if (self.value.length == 0) {
         document.getElementById('usern-alert').style.display = 'inline-block'
+        document.getElementById('usern-alert').textContent = 'Username is requiring!'
         SISUCondition[0] = false
     }
     else {
-        SISUCondition[0] = true
-        document.getElementById('usern-alert').style.display = 'none'
+        if (validateEmail(self.value)) {
+            SISUCondition[0] = true
+            document.getElementById('usern-alert').style.display = 'none'
+        }
+        else{
+            document.getElementById('usern-alert').style.display = 'inline-block'
+            document.getElementById('usern-alert').textContent = 'Username must be an email!'
+            SISUCondition[0] = false
+        }
     }
 }
 function PawChange(self) {
@@ -81,7 +94,7 @@ function localSIAuth() {
             if (res) {
                 window.location.replace('/home')
             }
-            else{
+            else {
                 alert("Login failed")
             }
         })
@@ -299,9 +312,9 @@ function renewPwNow() {
         }
         else {
             $.ajax({
-                type:"POST",
-                data:{email:document.getElementById('si-email-renew').value},
-                url:'/adm/send-mail-renew-password'
+                type: "POST",
+                data: { email: document.getElementById('si-email-renew').value },
+                url: '/adm/send-mail-renew-password'
             })
             document.getElementById('usern-alert').style.display = 'none';
             document.getElementById('s-i-cli-ui').innerHTML = `

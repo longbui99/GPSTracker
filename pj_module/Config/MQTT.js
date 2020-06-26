@@ -1,11 +1,11 @@
 module.exports = {
     "connectConfig": {
-        "host": "137.116.146.177",
+        "host": "52.187.125.59",
         "port": 1883,
-        "keepalive": 60,
+        // "keepalive": 60,
         "clientID": "ClientID",
-        // "username":"BKvm2",
-        // "password": "Hcmut_CSE_2020"
+        "username":"BKvm",
+        "password": "Hcmut_CSE_2020"
     },
     "GpsTopic":"Topic/GPS",
     "NotifyTopic":"Topic/LightD"

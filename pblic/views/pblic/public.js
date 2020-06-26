@@ -53,7 +53,7 @@ function validateEmail(email) {
 function UserChange(self) {
     if (self.value.length == 0) {
         document.getElementById('usern-alert').style.display = 'inline-block'
-        document.getElementById('usern-alert').textContent = 'Username is requiring!'
+        document.getElementById('usern-alert').textContent = 'Username is mandatory!'
         SISUCondition[0] = false
     }
     else {

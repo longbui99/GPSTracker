@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
 
     <link
       rel="stylesheet"
@@ -25,81 +24,168 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-    <style>
-      #map {
-        height: 100vh;
-        width: 100%;
-      }
-
-      html,
-      body {
-        height: 100vh;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
+    <link rel="stylesheet" href="../Client/DviceMain/deviceMain.css" />
   </head>
 
   <body>
     <p id="user-id-socket" style="display: none;"><%= id %></p>
-    <div class="container" style="margin-top: 70px; width: 100%;">
-      <div>
-        <!-- <h3>Time to next update: <span id="time" class="time" class="badge badge-danger">30</span></h3> -->
-      </div>
-      <br />
+    <div class="container-fluid">
       <div id="map"></div>
 
-      <div class="row">
-        <div
-          class="col-md-6"
-          style="border-right: solid 1px black; padding-right: 50px;"
-        >
-          <div class="input-group">
-            <div id="coord-btn-container" class="input-group-prepend"></div>
-            <input
-              id="logitude"
-              type="text"
-              placeholder="Longitude"
-              aria-label="First name"
-              class="form-control"
-            />
-            <input
-              id="latitude"
-              type="text"
-              placeholder="Latitude"
-              aria-label="Last name"
-              class="form-control"
-            />
+      <div id="panel">
+        <div id="device-panel" class="rounded-lg">
+          <div
+            class="text-left pl-3 font-weight-bold h5 border-bottom text-muted"
+          >
+            Device Management
           </div>
-          <br />
-          <div class="input-group mb-3">
-            <input
-              id="radius"
-              type="text"
-              class="form-control"
-              placeholder="Radius"
-              aria-label="Recipient's username"
-              aria-describedby="button-addon2"
-            />
+          <div id="GPS-device-container" class="row">
+            <div
+              id="device-buttons-container"
+              class="col-9 px-2 flex-wrap scrollbar scrollbar-primary"
+            ></div>
+            <div
+              id="edit-btn-container"
+              class="col-3 border-left d-flex justify-content-center align-items-center"
+            ></div>
+          </div>
+        </div>
+
+        <div id="zone-panel" class="rounded-lg mt-2">
+          <div
+            class="text-left pl-3 font-weight-bold h5 border-bottom border-dark text-muted"
+          >
+            Safe Zones
+          </div>
+          <div id="edit-zone" class="rounded-lg">
+            <div
+              class="text-left pl-3 font-weight-bold h6 border-bottom text-muted"
+              style="margin-bottom: 5px;"
+            >
+              Edit Information
+            </div>
+            <div class="row" style="height: 100%;">
+              <div
+                class="zone-buttons-container-scroll col-4 justify-content-center border-right border-dark d-flex flex-wrap"
+                style="height: 180px;"
+              >
+                <div class="w-75 mx-auto zone-buttons-container"></div>
+              </div>
+              <div id="lat-lng-rad" class="col-8">
+                <div class="">
+                  <div class="">
+                    <form class="form-inline d-flex">
+                      <label
+                        for="latitude"
+                        class="h7 font-weight-bold mr-auto p-2"
+                        >Latitude</label
+                      >
+                      <input
+                        id="latitude"
+                        type="text"
+                        placeholder="Latitude"
+                        aria-label="Last name"
+                        class="form-control mb-2 p-2"
+                      />
+                    </form>
+                    <form class="form-inline">
+                      <label
+                        for="logitude"
+                        class="h7 font-weight-bold mr-auto p-2"
+                        >Logitude</label
+                      >
+                      <input
+                        id="logitude"
+                        type="text"
+                        placeholder="Longitude"
+                        aria-label="First name"
+                        class="form-control mb-2 p-2"
+                      />
+                    </form>
+
+                    <form class="form-inline">
+                      <label
+                        for="radius"
+                        class="h7 font-weight-bold mr-auto p-2"
+                        >Radius</label
+                      >
+                      <input
+                        id="radius"
+                        type="text"
+                        class="form-control mb-2 p-2"
+                        placeholder="Radius"
+                        aria-label="Recipient's username"
+                        aria-describedby="button-addon2"
+                      />
+                    </form>
+
+                    <div
+                      id="update-btn-container"
+                      class="d-flex justify-content-center"
+                    >
+                      <button
+                        id="update-btn"
+                        class="input-group-text text-info"
+                      >
+                        Update
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="add-new-zone" class="rounded-lg">
+            <div
+              class="text-left pl-3 font-weight-bold h6 border-bottom text-muted"
+              style="margin-bottom: 5px;"
+            >
+              Add New Zone
+            </div>
+            <form class="form-inline row m-0">
+              <button class="btn btn-outline-secondary col-2">
+                Start
+              </button>
+              <div class="col-sm-5 d-flex flex-column">
+                <input
+                  type="text"
+                  placeholder="Latitude"
+                  aria-label="First name"
+                  class="form-control mb-2"
+                />
+                <input
+                  type="text"
+                  placeholder="Longitude"
+                  aria-label="First name"
+                  class="form-control"
+                />
+              </div>
+
+              <div class="col-3 d-flex flex-column m-0 pl-0">
+                <input
+                  type="text"
+                  placeholder="Radius"
+                  aria-label="First name"
+                  class="form-control"
+                />
+              </div>
+
+              <button class="col-2 btn btn-outline-secondary">
+                Add
+              </button>
+            </form>
           </div>
         </div>
       </div>
-      <div style="border: solid 2px black;" class="device-buttons-container">
-        <div class="edit-btn-container"></div>
-      </div>
-      <div
-        style="border: solid 2px black; height: 10vh;"
-        class="zone-buttons-container"
-      ></div>
-      <div class="zone-edit"></div>
     </div>
     <div
       id="my-alert"
       class="alert alert-warning alert-dismissible collapse"
       role="alert"
     >
-      <strong>Hint</strong> Type in all lat, lng, rad value before hit edit
-      button to effectively change the circle
+      <strong>Hint</strong> Double click on circle to start dynamically editting
+      it
       <button id="close-alert" type="button" class="close" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -124,18 +210,19 @@
       url: "/cli-main/get-devices-gps-information",
       type: "POST",
     }).done((result) => {
-      $(".zone-buttons-container").hide();
+      $("#zone-panel").hide();
+      $("#lat-lng-rad").hide();
 
       //default map view
       initMap(30, 30, 2);
       //Create a list of gps devices
       i = 1;
       result.forEach((device) => {
-        $(".device-buttons-container").append(
+        $("#device-buttons-container").append(
           $(
             " <button id='" +
               device._id +
-              "' class='btn btn-outline-secondary' type='button' id='button-addon2'>Device " +
+              "' class='btn btn-outline-secondary ml-2 mb-2 force-overflow' type='button' id='button-addon2'>GPS " +
               i +
               "</button>"
           ).on("click", function () {
@@ -153,12 +240,12 @@
               map,
             });
 
-            $(".edit-btn-container").empty();
-            $(".edit-btn-container").append(
+            $("#edit-btn-container").empty();
+            $("#edit-btn-container").append(
               $(
-                " <button class='btn btn-outline-secondary' type='button' id='button-addon2'>Edit</button>"
+                " <button class='btn btn-outline-secondary align-middle btn-block' type='button' id='edit-btn'>Edit</button>"
               ).on("click", function () {
-                $(".zone-buttons-container").show();
+                $("#zone-panel").show();
 
                 //get safe Zone
                 $.ajax({
@@ -173,12 +260,14 @@
                   zones.forEach((zone) => {
                     $(".zone-buttons-container").append(
                       $(
-                        " <button class='btn btn-outline-secondary' type='button' id='button-addon2'>Zone " +
+                        " <button class='btn btn-outline-secondary mb-2' type='button' id='button-addon2'>Zone " +
                           j +
                           "</button>"
                       ).on("click", function () {
+                        $("#lat-lng-rad").show();
                         /**/
-
+                        $(".form-control").off("change keypress keyup blur");
+                        $("#update-btn").off("click");
                         if (circle) circle.setMap(null);
 
                         circle = new google.maps.Circle({
@@ -194,13 +283,74 @@
                           },
                           radius: zone.Radius,
                         });
-                        $(".zone-edit").empty();
-                        $(".zone-edit").append(
-                          $(
-                            " <button class='btn btn-outline-secondary' type='button' id='button-addon2'>Edit Zone</button>"
-                          ).on("click", function () {
+
+                        //focus map and default
+                        map.panTo(circle.getCenter());
+                        map.setZoom(14);
+
+                        $("#logitude").val(circle.getCenter().lng());
+                        $("#latitude").val(circle.getCenter().lat());
+                        $("#radius").val(circle.getRadius());
+
+                        //Input direct to the form
+                        $(".form-control").on(
+                          "change keypress keyup blur",
+                          function (event) {
+                            //only allow numeric
+                            $(this).val(
+                              $(this)
+                                .val()
+                                .replace(/[^0-9\.]/g, "")
+                            );
+                            if (
+                              (event.which != 46 ||
+                                $(this).val().indexOf(".") != -1) &&
+                              (event.which < 48 || event.which > 57)
+                            ) {
+                              event.preventDefault();
+                            }
+
+                            //click outside to preview circle
+                            $(document).on("click", function (e) {
+                              if (
+                                !$(".form-control").is(e.target) &&
+                                $(".form-control").has(e.target).length === 0
+                              ) {
+                                circle.setCenter({
+                                  lat:
+                                    $("#latitude").val() === ""
+                                      ? circle.getCenter().lat()
+                                      : parseFloat($("#latitude").val()),
+
+                                  lng:
+                                    $("#logitude").val() === ""
+                                      ? circle.getCenter().lng()
+                                      : parseFloat($("#logitude").val()),
+                                });
+                                circle.setRadius(
+                                  $("#radius").val() === ""
+                                    ? circle.getRadius()
+                                    : parseFloat($("#radius").val())
+                                );
+
+                                $(document).off("click");
+                                google.maps.event.trigger(circle, "dblclick");
+                              }
+                            });
+                          }
+                        );
+
+                        //Or change via editting the circle
+                        google.maps.event.addListener(
+                          circle,
+                          "dblclick",
+                          function (event) {
+                            if (event) event.stop();
+
                             //circle become editable
                             circle.setEditable(true);
+                            map.panTo(circle.getCenter());
+                            map.setZoom(14);
 
                             //show warning if lat, lng or rad is empty
                             if (
@@ -212,17 +362,6 @@
                               $("#close-alert").on("click", function () {
                                 $("#my-alert").hide("fade");
                               });
-                              map.panTo(circle.getCenter());
-                              map.setZoom(14);
-                            } else {
-                              circle.setCenter({
-                                lat: parseFloat($("#latitude").val()),
-                                lng: parseFloat($("#logitude").val()),
-                              });
-                              circle.setRadius(parseFloat($("#radius").val()));
-
-                              map.panTo(circle.getCenter());
-                              map.setZoom(14);
                             }
 
                             //change circle center listener
@@ -251,54 +390,50 @@
                                 circle.setEditable(false);
                               }
                             );
-
-                            $("#coord-btn-container").empty();
-                            $("#coord-btn-container").append(
-                              $(
-                                "<button id='coordinatebtn' class='input-group-text text-info'>Coordinates</button>"
-                              ).on("click", function () {
-                                circle.setMap(null);
-                                $(".zone-edit").empty();
-                                $(".zone-buttons-container").empty();
-                                $(".zone-buttons-container").hide();
-
-                                // Update gps coordinates, realtime response with socket
-                                $.ajax({
-                                  url: "/cli-main/update-gps-coordinates",
-                                  type: "POST",
-                                  data: {
-                                    GPSID: zone.GPSID,
-                                    Long:
-                                      IpLong.value === ""
-                                        ? zone.Data[0]
-                                        : IpLong.value,
-                                    Lat:
-                                      IpLat.value === ""
-                                        ? zone.Data[1]
-                                        : IpLat.value,
-                                  },
-                                }).done((res) => {
-                                  //console.log(res);
-                                });
-
-                                //update Radius realtime
-                                $.ajax({
-                                  type: "POST",
-                                  url: "/cli-main/update-gps-radius",
-                                  data: {
-                                    GPSID: zone.GPSID,
-                                    Radius:
-                                      $("#radius").val() === ""
-                                        ? zone.Radius
-                                        : $("#radius").val(),
-                                  },
-                                }).done((res) => {
-                                  //console.log(res);
-                                });
-                              })
-                            );
-                          })
+                          }
                         );
+
+                        //
+
+                        $("#update-btn").on("click", function () {
+                          // Update gps coordinates, realtime response with socket
+                          $.ajax({
+                            url: "/cli-main/update-gps-coordinates",
+                            type: "POST",
+                            data: {
+                              GPSID: zone.GPSID,
+                              Long:
+                                IpLong.value === ""
+                                  ? zone.Data[0]
+                                  : IpLong.value,
+                              Lat:
+                                IpLat.value === "" ? zone.Data[1] : IpLat.value,
+                            },
+                          }).done((res) => {
+                            //console.log(res);
+                          });
+
+                          //update Radius realtime
+                          $.ajax({
+                            type: "POST",
+                            url: "/cli-main/update-gps-radius",
+                            data: {
+                              GPSID: zone.GPSID,
+                              Radius:
+                                $("#radius").val() === ""
+                                  ? zone.Radius
+                                  : $("#radius").val(),
+                            },
+                          }).done((res) => {
+                            //console.log(res);
+                          });
+                          console.log("update");
+                          setTimeout(() => {
+                            circle.setEditable(false);
+                          }, 10);
+
+                          $("#edit-btn").trigger("click");
+                        });
                       })
                     );
                     j++;

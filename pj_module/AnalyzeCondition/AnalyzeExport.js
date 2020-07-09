@@ -22,17 +22,6 @@ exports.Init = function (app, Users, ObjectIds, ios) {
       });
   });
 
-  app.post("/cli-main/get-devices-client-information", (req, res) => {
-    Users.collection(DBMS.ClientDeviceControl)
-      .find({
-        OwnerId: req.user.id,
-        GPSID: req.body.GPSID,
-      })
-      .toArray(function (err, response) {
-        res.send(response);
-      });
-  });
-
   app.post("/cli-main/update-gps-radius", (req, res) => {
     User.collection(DBMS.ClientDeviceControl).updateOne(
       {

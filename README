@@ -1,5 +1,9 @@
 <<<<<<< HEAD
 
+
+        DOB: '1999-01-01',
+        Gender: 0,
+        Address: "",
 =======
 Cập nhật bổ sung, có thêm thư mục mới là MQTT, trong đó có thư mực MQTTExport.js với hai chức năng chính:
 -InitMQTTConnect(...): Hàm này mọi ng k cần quan tâm.

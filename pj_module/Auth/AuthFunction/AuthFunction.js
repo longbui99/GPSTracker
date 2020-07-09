@@ -80,6 +80,9 @@ exports.AuthLocalSignUp = async (req, res, next) => {
             Email: req.body.username,
             Contact: "+84000000000",
             Balance: 0,
+            DOB: '1999-01-01',
+            Gender: 0,
+            Address: "",
             DateIn: Dat,
             LastAccess: Dat,
             State: 0,
@@ -152,8 +155,8 @@ exports.GoogleStrategy = function (accessToken, refreshToken, profile, done) {
                     }
                     );
                 }
-                else{
-                    return done(null,false)
+                else {
+                    return done(null, false)
                 }
             }
         })
@@ -168,12 +171,15 @@ function GoogleAddNewClient(User, profile, ObjectId) {
     let Dat = new Date().toISOString().substring(0, 10)
     // let DMY = Dat.getDate() + "/" + (Dat.getMonth()+1) + "/" + Dat.getFullYear();
     User.collection(DBMS.ClientInfoCollection).insertOne({
-        "_id": ObjectId,
-        Fname: profile.given_name,
-        Lname: profile.family_name,
-        Email: profile.email,
+        "_id": ObjectId(id),
+        Fname: "Not Update",
+        Lname: "",
+        Email: req.body.username,
         Contact: "+84000000000",
         Balance: 0,
+        DOB: '1999-01-01',
+        Gender: 0,
+        Address: "",
         DateIn: Dat,
         LastAccess: Dat,
         State: 0,

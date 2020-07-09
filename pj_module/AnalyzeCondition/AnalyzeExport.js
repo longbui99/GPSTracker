@@ -117,6 +117,7 @@ exports.AnalyzesSystem = async function (listGPS = null) {
       },
     ])
     .toArray();
+  // console.log(listUserControl)
   listUserControl.forEach((element) => {
     let distance = calculatedistance(
       element.DeviceData.Longitude,

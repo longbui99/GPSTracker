@@ -4,9 +4,15 @@
 const DBMS = require('../../Config/DBMS')
 
 module.exports = function(app, User, ObjectId){
+    app.get('/cli-main/search-devices',(req,res)=>{
+        res.render('index')
+    })
+    
     app.post('/cli-main/search-device', async(req,res)=>{
-        console.log("On search device:\n",req.body)
-        let returnVal  = await User.collection(DBMS.GPSDeviceCollection).updateOne({
+        // console.log("On search device:\n",{
+        //     _id:ObjectId(req.body.DeviceID)
+        // })
+        let returnVal  = await User.collection(DBMS.GPSDeviceCollection).findOne({
             _id:ObjectId(req.body.DeviceID)
         })
         if(returnVal){
@@ -18,7 +24,7 @@ module.exports = function(app, User, ObjectId){
             })
         }
         else{
-            returnVal  = await User.collection(DBMS.NTFDeviceCollection).updateOne({
+            returnVal  = await User.collection(DBMS.NTFDeviceCollection).findOne({
                 _id:ObjectId(req.body.DeviceID)
             })
             if(returnVal){

@@ -5,6 +5,7 @@ const DBMS = require('../../Config/DBMS')
 
 module.exports = function(app, User, ObjectId){
     app.post('/cli-main/search-device', async(req,res)=>{
+        console.log("On search device:\n",req.body)
         let returnVal  = await User.collection(DBMS.GPSDeviceCollection).updateOne({
             _id:ObjectId(req.body.DeviceID)
         })
@@ -36,6 +37,7 @@ module.exports = function(app, User, ObjectId){
 
 
     app.post('/cli-main/add-device', async(req,res)=>{
+        console.log("On add device:\n",req.body)
         let returnVal = await User.collection(DBMS.GPSDeviceCollection).updateOne({
             _id:ObjectId(req.body.DeviceID)
         },{
@@ -81,7 +83,7 @@ module.exports = function(app, User, ObjectId){
         }
     })
     app.post('/cli-main/get-all-device', async (req,res)=>{
-        // console.log(req.user.id)
+        console.log("On get devices:\n",req.body)
         let GPSList = await User.collection(DBMS.ClientDeviceControl).find({
             OwnerId:req.user.id
         },{projection:{
@@ -110,6 +112,7 @@ module.exports = function(app, User, ObjectId){
         res.send(lst)
     })
     app.post('/cli-main/settings-device', async(req,res)=>{
+        console.log("On settings devices:\n",req.body)
         let GPSModify = await User.collection(DBMS.ClientDeviceControl).update({
             GPSID:{$in:req.body.List}
         },

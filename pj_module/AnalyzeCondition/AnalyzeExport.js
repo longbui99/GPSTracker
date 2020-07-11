@@ -108,27 +108,29 @@ exports.AnalyzesSystem = async function (listGPS = null) {
     .toArray();
   // console.log(listUserControl)
   listUserControl.forEach((element) => {
-    let distance = calculatedistance(
-      element.DeviceData.Longitude,
-      element.DeviceData.Latitude,
-      element.Id[0].Data[0],
-      element.Id[0].Data[1]
-    );
-    let tmp = 0;
-    if (element.Id[0].Radius < distance) {
-      tmp = 1;
+    if (element.Id.length > 0) {
+      let distance = calculatedistance(
+        element.DeviceData.Longitude,
+        element.DeviceData.Latitude,
+        element.Id[0].Data[0],
+        element.Id[0].Data[1]
+      );
+      let tmp = 0;
+      if (element.Id[0].Radius < distance) {
+        tmp = 1;
+      }
+      MQTT.publicizeToDevice(element.Id[0].InformId, tmp, element.DeviceStatus);
+      io.to(element.DeviceOwnerID).emit("update-status-GPS", {
+        id: element.Id[0].GPSID,
+        status: tmp,
+      });
+      User.collection(DBMS.GPSDeviceCollection).updateOne(
+        {
+          _id: element._id,
+        },
+        { $set: { DeviceStatus: tmp } }
+      );
     }
-    MQTT.publicizeToDevice(element.Id[0].InformId, tmp, element.DeviceStatus);
-    io.to(element.DeviceOwnerID).emit("update-status-GPS", {
-      id: element.Id[0].GPSID,
-      status: tmp,
-    });
-    User.collection(DBMS.GPSDeviceCollection).updateOne(
-      {
-        _id: element._id,
-      },
-      { $set: { DeviceStatus: tmp } }
-    );
   });
 };
 exports.SingleAnalyze = SingleAnalyze;

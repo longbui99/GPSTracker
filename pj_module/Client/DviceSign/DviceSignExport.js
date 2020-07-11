@@ -4,7 +4,7 @@
 const DBMS = require('../../Config/DBMS')
 
 module.exports = function(app, User, ObjectId){
-    app.psot('/cli-main/search-device', async(req,res)=>{
+    app.post('/cli-main/search-device', async(req,res)=>{
         let returnVal  = await User.collection(DBMS.GPSDeviceCollection).updateOne({
             _id:ObjectId(req.body.DeviceID)
         })
@@ -40,12 +40,12 @@ module.exports = function(app, User, ObjectId){
             _id:ObjectId(req.body.DeviceID)
         },{
             $set:{
-                DeviceOwnerID:req.body.OwnerID
+                DeviceOwnerID:req.user.id
             }
         })
         if (returnVal.modifiedCount){
             User.collection(DBMS.ClientDeviceControl).insertOne({
-                OwnerId:req.body.OwnerID,
+                OwnerId:req.user.id,
                 GPSID:req.body.DeviceID,
                 GPSName:"Not set",
                 InformID:"",
@@ -60,12 +60,12 @@ module.exports = function(app, User, ObjectId){
                 _id:ObjectId(req.body.DeviceID)
             },{
                 $set:{
-                    DeviceOwnerID:req.body.OwnerID
+                    DeviceOwnerID:req.user.id
                 }
             })
             if (returnVal.modifiedCount){
                 User.collection(DBMS.ClientDeviceControl).insertOne({
-                    OwnerId:req.body.OwnerID,
+                    OwnerId:req.user.id,
                     GPSID:"",
                     GPSName:"",
                     InformID:req.body.DeviceID,

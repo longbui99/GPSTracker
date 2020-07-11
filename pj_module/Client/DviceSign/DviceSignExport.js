@@ -4,40 +4,83 @@
 const DBMS = require('../../Config/DBMS')
 
 module.exports = function(app, User, ObjectId){
-    app.post('/cli-main/adddevice', async(req,res)=>{
-        let GPSFind = await User.collection(DBMS.GPSDeviceCollection).findOne({
+    app.psot('/cli-main/search-device', async(req,res)=>{
+        let returnVal  = await User.collection(DBMS.GPSDeviceCollection).updateOne({
             _id:ObjectId(req.body.DeviceID)
         })
-        if (GPSFind == null){
-            let LedFind = await User.collection(DBMS.NTFDeviceCollection).findOne({
-                _id:ObjectId(req.body.DeviceID)
-            })
-            if (LedFind == null){
-                res.send(false)
-            }
-            else{
-                res.send({
-                    DeviceID:req.body.DeviceID,
-                    DeviceName:"LED",
-                    Devicetype:0,
-                    Devicestatus:LedFind.DeviceStatus,
-                    OwnerID:null,
-                    DeviceDateIn:LedFind.DeviceDateIn
-                })
-            }
-        }
-        else{
+        if(returnVal){
             res.send({
                 DeviceID:req.body.DeviceID,
                 DeviceName:"GPS",
                 Devicetype:0,
-                Devicestatus:GPSFind.DeviceStatus,
-                OwnerID:null,
-                DeviceDateIn:GPSFind.DeviceDateIn
+                Devicestatus:returnVal.DeviceStatus
             })
         }
+        else{
+            returnVal  = await User.collection(DBMS.NTFDeviceCollection).updateOne({
+                _id:ObjectId(req.body.DeviceID)
+            })
+            if(returnVal){
+                res.send({
+                    DeviceID:req.body.DeviceID,
+                    DeviceName:"LED",
+                    Devicetype:1,
+                    Devicestatus:returnVal.DeviceStatus
+                })
+            }
+            else{
+                res.send(false)
+            }
+        }
     })
-    app.post('/cli-main/get-alldevice', async (req,res)=>{
+
+
+    app.post('/cli-main/add-device', async(req,res)=>{
+        let returnVal = await User.collection(DBMS.GPSDeviceCollection).updateOne({
+            _id:ObjectId(req.body.DeviceID)
+        },{
+            $set:{
+                DeviceOwnerID:req.body.OwnerID
+            }
+        })
+        if (returnVal.modifiedCount){
+            User.collection(DBMS.ClientDeviceControl).insertOne({
+                OwnerId:req.body.OwnerID,
+                GPSID:req.body.DeviceID,
+                GPSName:"Not set",
+                InformID:"",
+                InformName:"",
+                Radius:0,
+                Data:[0,0]
+            })
+            res.send(true)
+        }
+        else{
+            returnVal = await User.collection(DBMS.NTFDeviceCollection).updateOne({
+                _id:ObjectId(req.body.DeviceID)
+            },{
+                $set:{
+                    DeviceOwnerID:req.body.OwnerID
+                }
+            })
+            if (returnVal.modifiedCount){
+                User.collection(DBMS.ClientDeviceControl).insertOne({
+                    OwnerId:req.body.OwnerID,
+                    GPSID:"",
+                    GPSName:"",
+                    InformID:req.body.DeviceID,
+                    InformName:"Not set",
+                    Radius:0,
+                    Data:[0,0]
+                })
+                res.send(true)
+            }
+            else{
+                res.send(false)
+            }
+        }
+    })
+    app.post('/cli-main/get-all-device', async (req,res)=>{
         // console.log(req.user.id)
         let GPSList = await User.collection(DBMS.ClientDeviceControl).find({
             OwnerId:req.user.id
@@ -66,7 +109,7 @@ module.exports = function(app, User, ObjectId){
         }
         res.send(lst)
     })
-    app.post('/cli-main/settingsdevice', async(req,res)=>{
+    app.post('/cli-main/settings-device', async(req,res)=>{
         let GPSModify = await User.collection(DBMS.ClientDeviceControl).update({
             GPSID:{$in:req.body.List}
         },

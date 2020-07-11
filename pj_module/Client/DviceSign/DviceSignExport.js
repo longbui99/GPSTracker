@@ -7,14 +7,16 @@ module.exports = function(app, User, ObjectId){
     app.get('/cli-main/search-devices',(req,res)=>{
         res.render('index')
     })
-    
+
     app.post('/cli-main/search-device', async(req,res)=>{
         // console.log("On search device:\n",{
         //     _id:ObjectId(req.body.DeviceID)
         // })
         let returnVal  = await User.collection(DBMS.GPSDeviceCollection).findOne({
-            _id:ObjectId(req.body.DeviceID)
+            _id:ObjectId(req.body.DeviceID),
+            DeviceOwnerID:""
         })
+        console.log(returnVal)
         if(returnVal){
             res.send({
                 DeviceID:req.body.DeviceID,
@@ -25,7 +27,8 @@ module.exports = function(app, User, ObjectId){
         }
         else{
             returnVal  = await User.collection(DBMS.NTFDeviceCollection).findOne({
-                _id:ObjectId(req.body.DeviceID)
+                _id:ObjectId(req.body.DeviceID),
+                DeviceOwnerID:""
             })
             if(returnVal){
                 res.send({

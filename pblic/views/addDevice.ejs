@@ -21,12 +21,12 @@
         <p id="user-id-socket" style="display: none;"><%= id %></p>
         <div id="googleMap"></div>
         <div class="my_button">
-            <button style="width: 75px; height: 65px"><i class="fa fa-home fa-4x" aria-hidden="true"></i></button>
-            <button style="width: 75px; height: 65px"><i class="fa fa-user-circle-o fa-4x" aria-hidden="true"></i></button>
-            <button style="width: 75px; height: 65px" onclick="addDeviceOn()"><i class="fa fa-plus-circle fa-4x" aria-hidden="true"></i></button>
-            <button style="width: 75px; height: 65px" onclick="settingOn()"><i class="fa fa-cog fa-4x" aria-hidden="true"></i></button>
-            <button style="width: 75px; height: 65px"><i class="fa fa-map-marker fa-4x" aria-hidden="true"></i></button>
-            <button style="width: 75px; height: 65px"><i class="fa fa-sign-out fa-4x" aria-hidden="true"></i></button>
+            <button style="width: 75px; height: 65px; cursor: pointer;"><i class="fa fa-home fa-4x" aria-hidden="true"></i></button>
+            <button style="width: 75px; height: 65px; cursor: pointer;" ><i class="fa fa-user-circle-o fa-4x" aria-hidden="true"></i></button>
+            <button style="width: 75px; height: 65px; cursor: pointer;" onclick="addDeviceOn()"><i class="fa fa-plus-circle fa-4x" aria-hidden="true"></i></button>
+            <button style="width: 75px; height: 65px; cursor: pointer;" onclick="settingOn()"><i class="fa fa-cog fa-4x" aria-hidden="true"></i></button>
+            <button style="width: 75px; height: 65px; cursor: pointer;"><i class="fa fa-map-marker fa-4x" aria-hidden="true"></i></button>
+            <button style="width: 75px; height: 65px; cursor: pointer;"><i class="fa fa-sign-out fa-4x" aria-hidden="true"></i></button>
         </div>
         <div id="addDevice">
             <h3>New device</h3>
@@ -84,6 +84,7 @@
                 var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
             }
             function addDeviceOn() {
+                //var x = new Boolean(false)
                 document.getElementById("settingDevice").style.display = "none";
                 document.getElementById("addDevice").style.display = "block";
             }
@@ -108,7 +109,8 @@
             $("#search").click(function() {
                 //console.log("abc");
                 var search = $('#searchID').val();
-                var idLength = $('#searchID').length;
+                var idLength = search.length;
+                console.log(idLength)
                 if (search == ''){
                     alert('Please type Device ID')
                 }
@@ -165,6 +167,12 @@
                     document.getElementById("user-id-socket").textContent
                 );
                 document.getElementById("user-id-socket").remove();
+            });
+            socket.on("emit-new-gps", (data) => {
+            // console.log(data)
+            //  data.gpsID; ID of GPS, user for determine what is the GPS change
+                Longitude.textContent = data.data[0];
+                Latitude.textContent = data.data[1];
             });
         </script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsxhaM3-9si1YOfppMVlPAn3Wp1Rs7r-s&&callback=myMap"></script>

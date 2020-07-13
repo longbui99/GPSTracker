@@ -13,7 +13,11 @@ module.exports = function (app, User, ObjectId) {
     AuthFunction.configureFunction(User, ObjectId)
 
     app.get('/auth/google',
-        passport.authenticate('google', { scope: ['profile', 'email'] }));
+        passport.authenticate('google', { scope: [
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/user.birthday.read'
+        ] }));
 
     app.get('/auth/google/callback',
         passport.authenticate('google', { failureRedirect: '/google-login-fail' }),

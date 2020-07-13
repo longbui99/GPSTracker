@@ -18,6 +18,7 @@ const MQTTProtocol = require('./pj_module/MQTT/MQTTExport');
 const MailModule = require('./pj_module/MailInf/MailExport')
 const RLProtocol = require('./pj_module/RealTime/RealTimeExport')
 const AnalyzeFunc = require('./pj_module/AnalyzeCondition/AnalyzeExport')
+const CLIHOME = require('./pj_module/Client/Home/CliHomeExport')
 
 // Config server  
 app.use(cors())
@@ -49,28 +50,24 @@ var User = null;
 
 client.connect().then(token => {
   User = token.db(DBMS.DatabaseName);
-
   // Config all dbms
+
+  
   AuthRequest(app, User, ObjectId)
   DeviceMain(app, User, ObjectId)
   DeviceSign(app, User, ObjectId)
   CustomersProfile(app, User, ObjectId)
   AdmManagerMain(app, User, ObjectId)
+  CLIHOME(app,User,ObjectId)
   MailModule.initMailServer(app, User, ObjectId)
   RLProtocol(io, User, ObjectId)
   MQTTProtocol.initMQTTConnect(io, User, ObjectId)
   AnalyzeFunc.Init(app, User, ObjectId, io)
   AnalyzeFunc.AnalyzesSystem()
+
+
   // Notification
-  app.get("/home", function (req, res) {
-    // console.log(req)
-    if (req.isAuthenticated() && req.user.typeAccount) {
-      res.render('CliHome')
-    }
-    else {
-      res.redirect('/')
-    }
-  });
+  
 
 
   console.log('DBMS ready')
@@ -86,4 +83,9 @@ app.get('/', (req, res, next) => {
       clearInterval(myInterval)
     }
   }, 100)
+})
+
+app.get('/log-out', (req,res)=>{
+  req.logout()
+  res.redirect('/')
 })

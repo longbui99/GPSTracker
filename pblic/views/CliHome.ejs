@@ -61,16 +61,26 @@
         <nav class="site-header sticky-top py-1 ">
             <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center ">
 
-                <a class="navbar-brand ml-4" href="#"><img src="/views/pblic/img/logo.png" class="lg-c" alt="LOGO"></a>
+                <a class="navbar-brand ml-4" href="#"><img src="/views/pblic/img/logo.png" class="lg-c"alt="LOGO"></a>
                 <div class="w-75 text-light align-items-center overflow-hidden">
                     <marquee direction="left" class="website-name">
                         <span class="span-header">AZbot</span>
                         <span class="s-p-h-small">Iot website for everyone</span>
                     </marquee>
                 </div>
-                <button type="button" class="btn btn-outline-primary">
+                <a class="btn btn-so" href="/log-out">
                     <span><i class="fas fa-sign-out-alt"></i></span>
-                    Sign out</button>
+                    Sign out</a>
+                <style>
+                    .btn-so{
+                        border-color: #007bff;
+                        color: #007bff;
+                    }
+                    .btn-so:hover{
+                        color: white;
+                        background-color: #007bff;
+                    }
+                </style>
             </div>
         </nav>
     </div>
@@ -79,20 +89,20 @@
             <nav class="tool-board nav d-flex flex-column bd-highlight ">
                 <a class=" per-direct" href="/home"><i class="fas fa-home"></i> Home</a>
                 <a class=" per-direct" href="/about-system"><i class="far fa-question-circle"></i> About</a>
-                <a class="per-direct" href="/management-account"><i class="far fa-user-circle"></i> Account</a>
+                <a class=" per-direct" href="/management-account"><i class="far fa-user-circle"></i> Account</a>
                 <a class=" per-direct" href="/upgrade-account"><i class="fab fa-ups"></i> Upgrade</a>
                 <a class=" per-direct" href="/device-settings"><i class="fab fa-codepen"></i> Device</a>
                 <a class=" per-direct" href="/device-trackings"><i class="fas fa-map-marker-alt"></i> Tracking</a>
             </nav>
         </div>
         <style>
-            a:link {
+            /* a:link {
                 text-decoration: none;
             }
 
             a:visited {
                 text-decoration: none;
-            }
+            } */
 
             .tool-board {
                 background-color: #353c51;
@@ -133,8 +143,8 @@
                         <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">Editing ...</a></p>
                     </div>
                     <div class="col-md-3" style="padding: 0px 0px;">
-                        <img src="/views/pblic/img/unknown-avatar.jpg" alt=""
-                            style="border:outset 4px lightgray;width: 100%;height: auto;;">
+                        <img  id="avatar-acc" src="/views/pblic/img/unknown-avatar.jpg" alt=""
+                            style="border:outset 4px lightgray;width: 100%;height: auto;border-radius: 50%;">
                     </div>
                 </div>
             </div>
@@ -198,6 +208,7 @@
             $('#add-acc').text(res.Address);
             $('#mail-acc').text(res.Email);
             $('#dob-acc').text(res.DOB);
+            $('#avatar-acc').attr('src',res.Avatar)
         }
     })
 </script>

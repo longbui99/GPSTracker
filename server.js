@@ -65,7 +65,7 @@ client.connect().then(token => {
   app.get("/home", function (req, res) {
     // console.log(req)
     if (req.isAuthenticated() && req.user.typeAccount) {
-      res.render('demoPage', { id: req.user.id })
+      res.render('CliHome')
     }
     else {
       res.redirect('/')

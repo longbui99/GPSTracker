@@ -4,19 +4,15 @@
 const DBMS = require('../../Config/DBMS')
 
 module.exports = function(app, User, ObjectId){
-    app.get('/cli-main/search-devices',(req,res)=>{
-        res.render('index')
+    app.get('/cli-main/gps-control-add',(req,res)=>{
+        res.render('addDevice',{ id: req.user.id })
     })
 
     app.post('/cli-main/search-device', async(req,res)=>{
-        // console.log("On search device:\n",{
-        //     _id:ObjectId(req.body.DeviceID)
-        // })
         let returnVal  = await User.collection(DBMS.GPSDeviceCollection).findOne({
             _id:ObjectId(req.body.DeviceID),
             DeviceOwnerID:""
         })
-        console.log(returnVal)
         if(returnVal){
             res.send({
                 DeviceID:req.body.DeviceID,
@@ -54,6 +50,7 @@ module.exports = function(app, User, ObjectId){
                 DeviceOwnerID:req.user.id
             }
         })
+        // console.log(returnVal)
         if (returnVal.modifiedCount){
             User.collection(DBMS.ClientDeviceControl).insertOne({
                 OwnerId:req.user.id,

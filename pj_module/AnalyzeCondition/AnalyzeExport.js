@@ -104,7 +104,7 @@ exports.AnalyzesSystem = async function (listGPS = null) {
       },
     ])
     .toArray();
-  // console.log(listUserControl)
+  console.log(listUserControl)
   listUserControl.forEach((element) => {
     if (element.Id.length > 0) {
       let control = false, distance = 0
@@ -113,8 +113,8 @@ exports.AnalyzesSystem = async function (listGPS = null) {
         distance = calculatedistance(
           element.DeviceData.Longitude,
           element.DeviceData.Latitude,
-          listData[i][1][0],
-          listData[i][1][1])
+          listData[i][1],
+          listData[i][2])
         if (listData[i][0] >= distance){
           control = true;
           break;
@@ -160,8 +160,8 @@ async function SingleAnalyze(GPSoptions = null, UserId = null) {
     distance = calculatedistance(
       DeviceGPSData.DeviceData.Longitude,
       DeviceGPSData.DeviceData.Latitude,
-      lstData[i][1][0],
-      lstData[i][1][1]
+      lstData[i][1],
+      lstData[i][2]
     )
     if (lstData[i][0] >= distance){
       control = true

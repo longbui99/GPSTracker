@@ -70,8 +70,6 @@ exports.Init = function (app, Users, ObjectIds, ios) {
 };
 
 function calculatedistance(lon1, lat1, lon2, lat2) {
-  // console.log(lon1, lat1)
-  // console.log(lon2, lat2)
   const R = 6371e3; // metres
   const φ1 = (lat1 * Math.PI) / 180; // φ, λ in radians
   const φ2 = (lat2 * Math.PI) / 180;
@@ -109,16 +107,23 @@ exports.AnalyzesSystem = async function (listGPS = null) {
   // console.log(listUserControl)
   listUserControl.forEach((element) => {
     if (element.Id.length > 0) {
-      let distance = calculatedistance(
-        element.DeviceData.Longitude,
-        element.DeviceData.Latitude,
-        element.Id[0].Data[0],
-        element.Id[0].Data[1]
-      );
-      let tmp = 0;
-      if (element.Id[0].Radius < distance) {
-        tmp = 1;
+      let control = false, distance = 0
+      let listData = element.Id[0].Data
+      for (let i = 0; i < listData.length; i++) {
+        distance = calculatedistance(
+          element.DeviceData.Longitude,
+          element.DeviceData.Latitude,
+          listData[i][1][0],
+          listData[i][1][1])
+        if (listData[i][0] >= distance){
+          control = true;
+          break;
+        }
       }
+
+      let tmp = 1;
+      if (control) 
+        tmp = 0
       MQTT.publicizeToDevice(element.Id[0].InformId, tmp, element.DeviceStatus);
       io.to(element.DeviceOwnerID).emit("update-status-GPS", {
         id: element.Id[0].GPSID,
@@ -146,19 +151,28 @@ async function SingleAnalyze(GPSoptions = null, UserId = null) {
     {
       GPSID: GPSoptions,
     },
-    { projection: { Data: 1, InformId: 1, Radius: 1 } }
+    { projection: { Data: 1, InformId: 1, Data: 1 } }
   );
 
-  let distance = calculatedistance(
-    DeviceGPSData.DeviceData.Longitude,
-    DeviceGPSData.DeviceData.Latitude,
-    UserGPSData.Data[0],
-    UserGPSData.Data[1]
-  );
-  let tmp = 0;
-  if (UserGPSData.Radius < distance) {
-    tmp = 1;
+  let control=false, distance = 0;
+  let lstData = UserGPSData.Data
+  for(let i = 0; i < lstData.length; i++){
+    distance = calculatedistance(
+      DeviceGPSData.DeviceData.Longitude,
+      DeviceGPSData.DeviceData.Latitude,
+      lstData[i][1][0],
+      lstData[i][1][1]
+    )
+    if (lstData[i][0] >= distance){
+      control = true
+      break;
+    }
   }
+
+  let tmp = 1;
+  if (control) 
+    tmp = 0
+
   MQTT.publicizeToDevice(UserGPSData.InformId, tmp, DeviceGPSData.DeviceStatus);
   io.to(UserId).emit("update-status-GPS", {
     id: GPSoptions,
@@ -170,6 +184,5 @@ async function SingleAnalyze(GPSoptions = null, UserId = null) {
     },
     { $set: { DeviceStatus: tmp } }
   );
-  // console.log(distance)
   return true;
 }

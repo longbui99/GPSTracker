@@ -18,11 +18,12 @@ module.exports = function (app, User, ObjectId) {
             'https://www.googleapis.com/auth/userinfo.email',
             'https://www.googleapis.com/auth/user.birthday.read'
         ] }));
+        // Fist, we have to connect some api scope google support
 
     app.get('/auth/google/callback',
         passport.authenticate('google', { failureRedirect: '/google-login-fail' }),
         function (req, res) {
-            res.redirect('/login-done');
+            res.redirect('/login-done'); // Here, if u sign up completed, u will render or send some to parent
         });
 
     // app.post('/auth/require-log-local-sign',

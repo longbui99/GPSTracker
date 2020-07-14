@@ -34,6 +34,7 @@ exports.initMQTTConnect = async function (io, User, ObjectId) {
                                 _id: id,
                                 DeviceStatus: 0,
                                 DeviceOwnerID: null,
+                                DeviceName:"GPS",
                                 DeviceDateIn: new Date().toISOString().substring(0, 10),
                                 DeviceData: {
                                     Longitude: data[0],

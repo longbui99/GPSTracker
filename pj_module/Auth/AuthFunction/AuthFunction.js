@@ -14,7 +14,8 @@ exports.configureFunction = (user, obj) => {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-
+// Let see, you send to opener window some action, because your sessions is stored!!
+// Then. u will closed the window. Let some demo
 exports.clientLoginDone = (req, res) => {
     console.log("OKOK")
     res.write(`

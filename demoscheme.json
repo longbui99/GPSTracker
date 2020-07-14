@@ -41,14 +41,13 @@
     "ClientDeviceControl":{
         "OwnerID":"123456879...",
         "GPSID":"1999",
-        "GPSName":"First GPS",
         "InformID":"2000",
-        "InformName":"Inform",
-        "UserSetup":{
-            "Long":"0",
-            "Lat":"1",
-            "Radius":1
-        }
+        "Data":[
+            ["Radius",["Long","Lat"]],
+            [0,[0,0]],
+            [1,[1,1]],
+            [2,[2,2]]
+        ]
     }
     ,
     "GPSDeviceScheme":{
@@ -56,6 +55,7 @@
         "DeviceStatus":1,
         "DeviceOwnerID":"123456789...",
         "DeviceDateIn":"",
+        "DeviceName":"GPS",
         "DeviceData":{
             "Longitude":"107.3",
             "Latitude":"103.7"
@@ -67,6 +67,7 @@
         "DeviceStatus":1,
         "DeviceOwnerID":"123456789...",
         "DeviceDateIn":"",
+        "DeviceName":"LED",
         "DeviceData":null
     }
 }

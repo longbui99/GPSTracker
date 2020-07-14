@@ -10,9 +10,7 @@ exports.parseLevel = function (level) {
     return State.Level[parseInt(level)]
 }
 exports.parseDate = function (Da) {
-    let Dat = new Date().getTime();
-    return (Dat - Date.parse(Da));
-
+    return (new Date().getTime() - Date.parse(Da));
 }
 exports.parseDateStart = function (dashboardType, displayType) {
     if (dashboardType == 0) {
@@ -43,11 +41,11 @@ exports.parseDateStart = function (dashboardType, displayType) {
         }
         else {
             let nowMonth = nowTime.getMonth() + 1;
-            nowTime.setDate(nowTime.getDate() - 30);
+            nowTime.setDate(nowTime.getDate() - 29);
             let startdate = nowTime.getDate();
             let pastMonth = nowTime.getMonth() + 1;
             let endMonthDate = new Date(nowTime.getFullYear(), nowTime.getMonth() + 1, 0).getDate()
-            for (let i = 0, j = startdate, month = pastMonth; i < 31; i++, j++) {
+            for (let i = 0, j = startdate, month = pastMonth; i < 30; i++, j++) {
                 listState.push(j + "/" + month)
                 if (j === endMonthDate) {
                     month = nowMonth
@@ -81,11 +79,7 @@ exports.parseDateDash = function (lisst, DayStart) {
     let returnVal = []
 
     let compareValue = 100 * (parseInt(lisst[index]._id.substring(5, 7))) + parseInt(lisst[index]._id.substring(8, 10))
-
-    // console.log("Start:\t", monthStart, dayStart)
-    // console.log("End:\t", endMonth, endDate)
-    // console.log("EOM:\t", endOfMonth)
-    // console.log("CPV:\t", compareValue)
+    
     while (!(loopDay == endDate && loopMonth == endMonth)) {
         if (index == listSize || (compareValue != (loopDay + 100 * loopMonth))) {
             returnVal.push(0)

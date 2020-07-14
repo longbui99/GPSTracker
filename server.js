@@ -52,7 +52,7 @@ client.connect().then(token => {
   User = token.db(DBMS.DatabaseName);
   // Config all dbms
 
-  
+
   AuthRequest(app, User, ObjectId)
   DeviceMain(app, User, ObjectId)
   DeviceSign(app, User, ObjectId)
@@ -67,7 +67,7 @@ client.connect().then(token => {
 
 
   // Notification
-  
+
 
 
   console.log('DBMS ready')
@@ -85,7 +85,7 @@ app.get('/', (req, res, next) => {
   }, 100)
 })
 
-app.get('/log-out', (req,res)=>{
+app.get('/log-out', (req, res) => {
   req.logout()
   res.redirect('/')
 })

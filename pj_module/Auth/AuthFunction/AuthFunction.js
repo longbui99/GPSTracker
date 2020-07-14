@@ -16,6 +16,7 @@ exports.configureFunction = (user, obj) => {
 
 
 exports.clientLoginDone = (req, res) => {
+    console.log("OKOK")
     res.write(`
             <script>
                 window.opener.location.replace('/home');
@@ -35,7 +36,7 @@ exports.LocalStragegyClient = (user, pass, done) => {
             // console.log(Hash.Pass(pass) === res.password)
             return done(null, {
                 id: res._id,
-                typeAccount: true
+                typePosition: true
             });
         }
         else {
@@ -51,7 +52,7 @@ exports.LocalStragegyAdm = (user, pass, done) => {
         if (Hash.Pass(pass) == res.password) {
             return done(null, {
                 id: res._id,
-                typeAccount: false
+                typePosition: false
             });
         }
         else {
@@ -85,6 +86,7 @@ exports.AuthLocalSignUp = async (req, res, next) => {
             Address: "",
             DateIn: Dat,
             LastAccess: Dat,
+            Avatar:"/views/pblic/img/logo.png",
             State: 0,
             Level: {
                 NowLevel: 0,
@@ -124,6 +126,7 @@ exports.deserializeUser = function (user, done) {
 }
 
 exports.GoogleStrategy = function (accessToken, refreshToken, profile, done) {
+    // console.log(profile)
     profile = profile._json;
     if (profile.email_verified) {
         User.collection(DBMS.ClientAuthCollection).findOne({ username: profile.email }, (err, res) => {
@@ -171,10 +174,10 @@ function GoogleAddNewClient(User, profile, ObjectId) {
     let Dat = new Date().toISOString().substring(0, 10)
     // let DMY = Dat.getDate() + "/" + (Dat.getMonth()+1) + "/" + Dat.getFullYear();
     User.collection(DBMS.ClientInfoCollection).insertOne({
-        "_id": ObjectId(id),
-        Fname: "Not Update",
-        Lname: "",
-        Email: req.body.username,
+        "_id": ObjectId,
+        Fname: profile.family_name,
+        Lname: profile.given_name,
+        Email: profile.email,
         Contact: "+84000000000",
         Balance: 0,
         DOB: '1999-01-01',
@@ -182,6 +185,7 @@ function GoogleAddNewClient(User, profile, ObjectId) {
         Address: "",
         DateIn: Dat,
         LastAccess: Dat,
+        Avatar:profile.picture,
         State: 0,
         Level: {
             NowLevel: 0,

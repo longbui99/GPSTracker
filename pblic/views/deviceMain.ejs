@@ -1,493 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
-      crossorigin="anonymous"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- JS, Popper.js, and jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-      integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-    <link rel="stylesheet" href="../Client/DviceMain/deviceMain.css" />
-  </head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
 
-  <body>
-    <p id="user-id-socket" style="display: none;"><%= id %></p>
-    <div class="container-fluid">
-      <div id="map"></div>
+  <!-- JS, Popper.js, and jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <link rel="stylesheet" href="../Client/DviceMain/deviceMain.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
 
-      <div id="panel">
-        <div id="device-panel" class="rounded-lg">
-          <div
-            class="text-left pl-3 font-weight-bold h5 border-bottom text-muted"
-          >
-            Device Management
-          </div>
-          <div id="GPS-device-container" class="row">
-            <div
-              id="device-buttons-container"
-              class="col-9 px-2 flex-wrap scrollbar scrollbar-primary"
-            ></div>
-            <div
-              id="edit-btn-container"
-              class="col-3 border-left d-flex justify-content-center align-items-center"
-            ></div>
-          </div>
+<body>
+  <p id="user-id-socket" style="display: none;"><%= id %></p>
+  <div class="container-fluid">
+    <div id="map"></div>
+
+    <div id="panel">
+      <div id="device-panel" class="rounded-lg">
+        <div class="text-left pl-3 font-weight-bold h5 border-bottom text-muted">
+          Device Management
         </div>
+        <div id="GPS-device-container" class="row">
+          <div id="device-buttons-container" class="col-9 px-2 flex-wrap scrollbar scrollbar-primary"></div>
+          <div id="edit-btn-container" class="col-3 border-left d-flex justify-content-center align-items-center"></div>
+        </div>
+      </div>
 
-        <div id="zone-panel" class="rounded-lg mt-2">
-          <div
-            class="text-left pl-3 font-weight-bold h5 border-bottom border-dark text-muted"
-          >
-            Safe Zones
+      <div id="zone-panel" class="rounded-lg mt-2">
+        <div class="text-left pl-3 font-weight-bold h5 border-bottom border-dark text-muted">
+          Safe Zones
+        </div>
+        <div id="edit-zone" class="rounded-lg">
+          <div class="text-left pl-3 font-weight-bold h6 border-bottom text-muted" style="margin-bottom: 5px;">
+            Edit Information
           </div>
-          <div id="edit-zone" class="rounded-lg">
+          <div class="row" style="height: 100%;">
             <div
-              class="text-left pl-3 font-weight-bold h6 border-bottom text-muted"
-              style="margin-bottom: 5px;"
-            >
-              Edit Information
+              class="zone-buttons-container-scroll col-4 justify-content-center border-right border-dark d-flex flex-wrap"
+              style="height: 180px;">
+              <div class="w-75 mx-auto zone-buttons-container"></div>
             </div>
-            <div class="row" style="height: 100%;">
-              <div
-                class="zone-buttons-container-scroll col-4 justify-content-center border-right border-dark d-flex flex-wrap"
-                style="height: 180px;"
-              >
-                <div class="w-75 mx-auto zone-buttons-container"></div>
-              </div>
-              <div id="lat-lng-rad" class="col-8">
+            <div id="lat-lng-rad" class="col-8">
+              <div class="">
                 <div class="">
-                  <div class="">
-                    <form class="form-inline d-flex">
-                      <label
-                        for="latitude"
-                        class="h7 font-weight-bold mr-auto p-2"
-                        >Latitude</label
-                      >
-                      <input
-                        id="latitude"
-                        type="text"
-                        placeholder="Latitude"
-                        aria-label="Last name"
-                        class="form-control mb-2 p-2"
-                      />
-                    </form>
-                    <form class="form-inline">
-                      <label
-                        for="logitude"
-                        class="h7 font-weight-bold mr-auto p-2"
-                        >Logitude</label
-                      >
-                      <input
-                        id="logitude"
-                        type="text"
-                        placeholder="Longitude"
-                        aria-label="First name"
-                        class="form-control mb-2 p-2"
-                      />
-                    </form>
+                  <form class="form-inline d-flex">
+                    <label for="latitude" class="h7 font-weight-bold mr-auto p-2">Latitude</label>
+                    <input id="latitude" type="text" placeholder="Latitude" aria-label="Last name"
+                      class="form-control input-lat-lng-rad mb-2 p-2" />
+                  </form>
+                  <form class="form-inline">
+                    <label for="logitude" class="h7 font-weight-bold mr-auto p-2">Logitude</label>
+                    <input id="logitude" type="text" placeholder="Longitude" aria-label="First name"
+                      class="form-control input-lat-lng-rad mb-2 p-2" />
+                  </form>
 
-                    <form class="form-inline">
-                      <label
-                        for="radius"
-                        class="h7 font-weight-bold mr-auto p-2"
-                        >Radius</label
-                      >
-                      <input
-                        id="radius"
-                        type="text"
-                        class="form-control mb-2 p-2"
-                        placeholder="Radius"
-                        aria-label="Recipient's username"
-                        aria-describedby="button-addon2"
-                      />
-                    </form>
+                  <form class="form-inline">
+                    <label for="radius" class="h7 font-weight-bold mr-auto p-2">Radius</label>
+                    <input id="radius" type="text" class="form-control input-lat-lng-rad mb-2 p-2"
+                      placeholder="Radius" />
+                  </form>
 
-                    <div
-                      id="update-btn-container"
-                      class="d-flex justify-content-center"
-                    >
-                      <button
-                        id="update-btn"
-                        class="input-group-text text-info"
-                      >
-                        Update
-                      </button>
-                    </div>
+                  <div id="update-btn-container" class="d-flex justify-content-center">
+                    <input id="update-btn" class="input-group-text text-info" data-toggle="modal"
+                      data-target="#confirm-update-zone-box" type="button" value="Update">
+                    <span style="padding-left: 10px; color: brown; "><i style="cursor:pointer;" class="fa fa-trash"
+                        data-toggle="modal" data-target="#confirm-delete-zone-box"></i></span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div id="add-new-zone" class="rounded-lg">
-            <div
-              class="text-left pl-3 font-weight-bold h6 border-bottom text-muted"
-              style="margin-bottom: 5px;"
-            >
-              Add New Zone
-            </div>
-            <form class="form-inline row m-0">
-              <button class="btn btn-outline-secondary col-2">
-                Start
-              </button>
-              <div class="col-sm-5 d-flex flex-column">
-                <input
-                  type="text"
-                  placeholder="Latitude"
-                  aria-label="First name"
-                  class="form-control mb-2"
-                />
-                <input
-                  type="text"
-                  placeholder="Longitude"
-                  aria-label="First name"
-                  class="form-control"
-                />
-              </div>
-
-              <div class="col-3 d-flex flex-column m-0 pl-0">
-                <input
-                  type="text"
-                  placeholder="Radius"
-                  aria-label="First name"
-                  class="form-control"
-                />
-              </div>
-
-              <button class="col-2 btn btn-outline-secondary">
-                Add
-              </button>
-            </form>
+        <div id="add-new-zone" class="rounded-lg">
+          <div class="text-left pl-3 font-weight-bold h6 border-bottom text-muted" style="margin-bottom: 5px;">
+            Add New Zone
           </div>
+          <form class="form-inline row m-0">
+            <button id="start-add-zone-btn" class="btn btn-outline-secondary col-2" type="button">
+              Start
+            </button>
+            <div class="col-sm-5 d-flex flex-column">
+              <input id="new-lat" type="text" placeholder="Latitude" aria-label="First name"
+                class="form-control input-new-lat-lng-rad mb-2" />
+              <input id="new-lng" type="text" placeholder="Logitude" aria-label="First name"
+                class="form-control input-new-lat-lng-rad" />
+            </div>
+
+            <div class="col-3 d-flex flex-column m-0 pl-0">
+              <input id="new-rad" type="text" placeholder="Radius" aria-label="First name"
+                class="form-control input-new-lat-lng-rad" />
+            </div>
+
+            <button id="add-new-zone-btn" class="col-2 btn btn-outline-secondary" type="button">
+              Add
+            </button>
+
+          </form>
         </div>
       </div>
     </div>
-    <div
-      id="my-alert"
-      class="alert alert-warning alert-dismissible collapse"
-      role="alert"
-    >
-      <strong>Hint</strong> Double click on circle to start dynamically editting
-      it
-      <button id="close-alert" type="button" class="close" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
+  </div>
+  <div id="my-alert" class="alert alert-warning alert-dismissible collapse" role="alert"
+    style="position: absolute; bottom: 10px; left: 40px;">
+    <strong>Warning</strong> Fill in all Latitude, Logtitude, Radius!
+    <button id="close-alert" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div id="input-alert" class="alert alert-warning alert-dismissible collapse" role="alert"
+    style="position: absolute; bottom: 10px; left: 40px;">
+    <strong>Warning</strong> Input must be either negative or positive float numbers!
+    <button id="close-input-alert" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div id="my-success" class="alert alert-success alert-dismissible collapse" role="alert"
+    style="position: absolute; bottom: 10px; left: 40px;">
+    Data has updated!
+  </div>
+  <div id="confirm-delete-zone-box" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Do you want to delete the zone ?</p>
+        </div>
+        <div class="modal-footer">
+          <button id="confirm-delete" type="button" class="btn btn-primary" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+        </div>
+      </div>
     </div>
-    <script
-      async
-      defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC3UFvoj_1OQ9N6Mzbz1lQu7tRdQnn8_cQ"
-    ></script>
-  </body>
-  <script type="text/javascript">
-    // Generate origin element
-    let countTime = 0;
-    let IpLong = document.getElementById("logitude");
-    let IpLat = document.getElementById("latitude");
-    let map;
-    let circle;
-    let marker;
-
-    // Get origin data, set to orign element
-    $.ajax({
-      url: "/cli-main/get-devices-gps-information",
-      type: "POST",
-    }).done((result) => {
-      $("#zone-panel").hide();
-      $("#lat-lng-rad").hide();
-
-      //default map view
-      initMap(30, 30, 2);
-      //Create a list of gps devices
-      i = 1;
-      result.forEach((device) => {
-        $("#device-buttons-container").append(
-          $(
-            " <button id='" +
-              device._id +
-              "' class='btn btn-outline-secondary ml-2 mb-2 force-overflow' type='button' id='button-addon2'>GPS " +
-              i +
-              "</button>"
-          ).on("click", function () {
-            //focus map
-            initMap(device.DeviceData.Latitude, device.DeviceData.Longitude, 5);
-
-            //create marker for that gps
-
-            if (marker) marker.setMap(null);
-            marker = new google.maps.Marker({
-              position: {
-                lat: parseFloat(device.DeviceData.Latitude),
-                lng: parseFloat(device.DeviceData.Longitude),
-              },
-              map,
-            });
-
-            $("#edit-btn-container").empty();
-            $("#edit-btn-container").append(
-              $(
-                " <button class='btn btn-outline-secondary align-middle btn-block' type='button' id='edit-btn'>Edit</button>"
-              ).on("click", function () {
-                $("#zone-panel").show();
-
-                //get safe Zone
-                $.ajax({
-                  url: "/cli-main/get-devices-client-information",
-                  type: "POST",
-                  data: {
-                    GPSID: device._id,
-                  },
-                }).done((zones) => {
-                  j = 1;
-                  $(".zone-buttons-container").empty();
-                  zones.forEach((zone) => {
-                    $(".zone-buttons-container").append(
-                      $(
-                        " <button class='btn btn-outline-secondary mb-2' type='button' id='button-addon2'>Zone " +
-                          j +
-                          "</button>"
-                      ).on("click", function () {
-                        $("#lat-lng-rad").show();
-                        /**/
-                        $(".form-control").off("change keypress keyup blur");
-                        $("#update-btn").off("click");
-                        if (circle) circle.setMap(null);
-
-                        circle = new google.maps.Circle({
-                          strokeColor: "#FF0000",
-                          strokeOpacity: 0.8,
-                          strokeWeight: 2,
-                          fillColor: "#FF0000",
-                          fillOpacity: 0.35,
-                          map,
-                          center: {
-                            lat: zone.Data[1],
-                            lng: zone.Data[0],
-                          },
-                          radius: zone.Radius,
-                        });
-
-                        //focus map and default
-                        map.panTo(circle.getCenter());
-                        map.setZoom(14);
-
-                        $("#logitude").val(circle.getCenter().lng());
-                        $("#latitude").val(circle.getCenter().lat());
-                        $("#radius").val(circle.getRadius());
-
-                        //Input direct to the form
-                        $(".form-control").on(
-                          "change keypress keyup blur",
-                          function (event) {
-                            //only allow numeric
-                            $(this).val(
-                              $(this)
-                                .val()
-                                .replace(/[^0-9\.]/g, "")
-                            );
-                            if (
-                              (event.which != 46 ||
-                                $(this).val().indexOf(".") != -1) &&
-                              (event.which < 48 || event.which > 57)
-                            ) {
-                              event.preventDefault();
-                            }
-
-                            //click outside to preview circle
-                            $(document).on("click", function (e) {
-                              if (
-                                !$(".form-control").is(e.target) &&
-                                $(".form-control").has(e.target).length === 0
-                              ) {
-                                circle.setCenter({
-                                  lat:
-                                    $("#latitude").val() === ""
-                                      ? circle.getCenter().lat()
-                                      : parseFloat($("#latitude").val()),
-
-                                  lng:
-                                    $("#logitude").val() === ""
-                                      ? circle.getCenter().lng()
-                                      : parseFloat($("#logitude").val()),
-                                });
-                                circle.setRadius(
-                                  $("#radius").val() === ""
-                                    ? circle.getRadius()
-                                    : parseFloat($("#radius").val())
-                                );
-
-                                $(document).off("click");
-                                google.maps.event.trigger(circle, "dblclick");
-                              }
-                            });
-                          }
-                        );
-
-                        //Or change via editting the circle
-                        google.maps.event.addListener(
-                          circle,
-                          "dblclick",
-                          function (event) {
-                            if (event) event.stop();
-
-                            //circle become editable
-                            circle.setEditable(true);
-                            map.panTo(circle.getCenter());
-                            map.setZoom(14);
-
-                            //show warning if lat, lng or rad is empty
-                            if (
-                              $("#logitude").val() === "" ||
-                              $("#latitude").val() === "" ||
-                              $("#radius").val() === ""
-                            ) {
-                              $("#my-alert").show("fade");
-                              $("#close-alert").on("click", function () {
-                                $("#my-alert").hide("fade");
-                              });
-                            }
-
-                            //change circle center listener
-                            google.maps.event.addListener(
-                              circle,
-                              "center_changed",
-                              function (event) {
-                                $("#logitude").val(circle.getCenter().lng());
-                                $("#latitude").val(circle.getCenter().lat());
-                              }
-                            );
-
-                            //change circle radius listener
-                            google.maps.event.addListener(
-                              circle,
-                              "radius_changed",
-                              function (event) {
-                                $("#radius").val(circle.getRadius());
-                              }
-                            );
-
-                            google.maps.event.addListener(
-                              map,
-                              "click",
-                              function (event) {
-                                circle.setEditable(false);
-                              }
-                            );
-                          }
-                        );
-
-                        //
-
-                        $("#update-btn").on("click", function () {
-                          // Update gps coordinates, realtime response with socket
-                          $.ajax({
-                            url: "/cli-main/update-gps-coordinates",
-                            type: "POST",
-                            data: {
-                              GPSID: zone.GPSID,
-                              Long:
-                                IpLong.value === ""
-                                  ? zone.Data[0]
-                                  : IpLong.value,
-                              Lat:
-                                IpLat.value === "" ? zone.Data[1] : IpLat.value,
-                            },
-                          }).done((res) => {
-                            //console.log(res);
-                          });
-
-                          //update Radius realtime
-                          $.ajax({
-                            type: "POST",
-                            url: "/cli-main/update-gps-radius",
-                            data: {
-                              GPSID: zone.GPSID,
-                              Radius:
-                                $("#radius").val() === ""
-                                  ? zone.Radius
-                                  : $("#radius").val(),
-                            },
-                          }).done((res) => {
-                            //console.log(res);
-                          });
-                          console.log("update");
-                          setTimeout(() => {
-                            circle.setEditable(false);
-                          }, 10);
-
-                          $("#edit-btn").trigger("click");
-                        });
-                      })
-                    );
-                    j++;
-                  });
-                });
-              })
-            );
-          })
-        );
-        i++;
-      });
-    });
-
-    //function create map
-    function initMap(lat, lng, zoom) {
-      map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: parseFloat(lat), lng: parseFloat(lng) },
-        zoom,
-      });
-    }
-
-    // Initial  socket connection (real time connection)
-    const socket = io.connect("http://localhost:5000");
-    // const socket = io.connect('https://getdateset.herokuapp.com')
-
-    // Sign socket with user id, and remove it in client-view
-    document.addEventListener("DOMContentLoaded", function () {
-      socket.emit(
-        "sign-in-socket",
-        document.getElementById("user-id-socket").textContent
-      );
-      document.getElementById("user-id-socket").remove();
-    });
-
-    // Whenever MQTT get new DBMS, if It going to be changed,
-    //  emit to user socket online
-    socket.on("emit-new-gps", (data) => {
-      console.log(data);
-      //  data.gpsID; ID of GPS, user for determine what is the GPS change
-      Longitude.textContent = data.data[0];
-      Latitude.textContent = data.data[1];
-
-      if (marker) marker.setMap(null);
-      marker = new google.maps.Marker({
-        position: { lat: data.data[0], lng: data.data[1] },
-        map,
-      });
-    });
-
-    // Whenever data change, MQTT, User change, ...,
-    // Server response to client new status of device
-    socket.on("update-status-GPS", (data) => {
-      // id: ID of GPS, string type
-      //State.textContent = data.status;
-    });
+  </div>
+  <div id="confirm-add-zone-box" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Do you want to add this zone ?</p>
+        </div>
+        <div class="modal-footer">
+          <button id="confirm-add" type="button" class="btn btn-primary" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="confirm-update-zone-box" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Do you want to update this zone ?</p>
+        </div>
+        <div class="modal-footer">
+          <button id="confirm-update" type="button" class="btn btn-primary" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC3UFvoj_1OQ9N6Mzbz1lQu7tRdQnn8_cQ">
   </script>
+</body>
+<script type="text/javascript" src="../Client/DviceMain/DeviceMain.js"></script>
+
 </html>

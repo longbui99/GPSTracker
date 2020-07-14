@@ -104,9 +104,9 @@ exports.AnalyzesSystem = async function (listGPS = null) {
       },
     ])
     .toArray();
-  console.log(listUserControl)
   listUserControl.forEach((element) => {
     if (element.Id.length > 0) {
+      console.log(element)
       let control = false, distance = 0
       let listData = element.Id[0].Data
       for (let i = 0; i < listData.length; i++) {

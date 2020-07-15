@@ -1,7 +1,7 @@
 #googleMap {
-    width: 99vw;
-    height: 97vh;
-    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    /* overflow: hidden; */
 }
 
 html {
@@ -12,8 +12,8 @@ html {
     position: absolute;
     /* height: 500px;
     width: 500px; */
-    top: 50px;
-    right: 50px;
+    top: 10px;
+    right: 5px;
 }
 
 .my_button button {
@@ -47,7 +47,8 @@ h3 {
     padding: 15px;
 }
 
-#addDevice .about{
+#addDevice #about{
+    display: none;
     padding-top: 6px;
     padding-left: 20px;
     padding-right: 20px;
@@ -90,7 +91,7 @@ h3 {
 #settingDevice {
     display: none;
     width: 250px;
-    height: 400px;
+    height: 450px;
     position: absolute;
     right: 100px;
     top: 50%;
@@ -141,16 +142,18 @@ h3 {
 #add_button {
     width:70px; 
     margin-right:5px;
+    cursor: pointer;
 }
   
 #setting_button {
     width:70px; 
-    margin-right:5px;
+    cursor: pointer;
 }
 
 #search {
     position: absolute;
     top: 79px;
     right: 20px;
+    cursor: pointer;
 }
 

@@ -120,7 +120,7 @@ module.exports = function (app, User, ObjectId) {
     app.post('/cli-main/settings-device', (req, res) => {
         console.log("On settings devices:\n", req.body)
         let List = req.body.List
-        for(let i = 0; i < req.body.length; i++){
+        for(let i = 0; i < List.length; i++){
             User.collection(DBMS.ClientDeviceControl).updateOne({
                 GPSID:List[i][0]
             },{

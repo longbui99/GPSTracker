@@ -117,22 +117,17 @@ module.exports = function (app, User, ObjectId) {
 
         res.send(lst)
     })
-    app.post('/cli-main/settings-device', async (req, res) => {
+    app.post('/cli-main/settings-device', (req, res) => {
         console.log("On settings devices:\n", req.body)
-        let GPSModify = await User.collection(DBMS.ClientDeviceControl).update({
-            GPSID: { $in: req.body.List }
-        },
-            {
-                $set: {
-                    InformID: req.body.Id
+        for(let i = 0; i < req.body.length; i++){
+            User.collection(DBMS.ClientDeviceControl).updateOne({
+                GPSID:req.body[i][0]
+            },{
+                $set:{
+                    InformID:req.body[i][1]
                 }
-            }
-        )
-        if (GPSModify) {
-            res.send(true)
+            })
         }
-        else {
-            res.send(false)
-        }
+        res.send(true)
     })
 }

@@ -75,6 +75,13 @@ exports.AuthLocalSignUp = async (req, res, next) => {
         // console.log("ID:", id)
         let Dat = new Date().toISOString().substring(0, 10)
         // let DMY = Dat.getDate() + "/" + (Dat.getMonth()+1) + "/" + Dat.getFullYear();
+        User.collection(DBMS.MessageCollection).insertOne({
+            _id:ObjectId(id),
+            Date:"",
+            isReading:1,
+            message:"",
+            total:0
+        })
         await User.collection(DBMS.ClientInfoCollection).insertOne({
             "_id": ObjectId(id),
             Fname: "Not Update",
@@ -100,6 +107,7 @@ exports.AuthLocalSignUp = async (req, res, next) => {
         })
         res.send(true)
         // console.log("has been sent")
+        
     }
     else {
         res.send(false)
@@ -199,6 +207,13 @@ function GoogleAddNewClient(User, profile, ObjectId) {
     }, (err) => {
         if (err)
             console.log(err)
+    })
+    User.collection(DBMS.MessageCollection).insertOne({
+        _id:ObjectId,
+        Date:"",
+        isReading:1,
+        message:"",
+        total:0
     })
 }
 

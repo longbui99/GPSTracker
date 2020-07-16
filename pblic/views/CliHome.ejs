@@ -54,6 +54,54 @@
             transform: rotateZ(-360deg);
         }
     }
+
+    .toasts {
+        position: absolute;
+        display: none;
+        max-width: 350px;
+        top: 10px;
+        right: 10px;
+        overflow: hidden;
+        font-size: .875rem;
+        background-color: rgba(255, 255, 255, .85);
+        background-clip: padding-box;
+        border: 1px solid rgba(0, 0, 0, .1);
+        box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .1);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        border-radius: .25rem;
+        z-index: 1021;
+        animation: showing 0.25s linear;
+    }
+
+    .toasts-header {
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: .25rem .75rem;
+        color: #6c757d;
+        background-color: rgba(255, 255, 255, .85);
+        background-clip: padding-box;
+        border-bottom: 1px solid rgba(0, 0, 0, .05);
+    }
+
+    .toasts-body {
+        padding: .75rem;
+    }
+
+    .toasts.show {
+        display: inline-block;
+    }
+
+    @keyframes showing {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
 </style>
 
 <body style="width: 100vw; overflow: hidden;">
@@ -61,22 +109,37 @@
         <nav class="site-header sticky-top py-1 ">
             <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center ">
 
-                <a class="navbar-brand ml-4" href="#"><img src="/views/pblic/img/logo.png" class="lg-c"alt="LOGO"></a>
-                <div class="w-75 text-light align-items-center overflow-hidden">
+                <a class="navbar-brand ml-4" href="#"><img src="/views/pblic/img/logo.png" class="lg-c" alt="LOGO"></a>
+                <div class="w-75 align-items-center overflow-hidden">
                     <marquee direction="left" class="website-name">
                         <span class="span-header">AZbot</span>
                         <span class="s-p-h-small">Iot website for everyone</span>
                     </marquee>
                 </div>
-                <a class="btn btn-so" href="/log-out">
-                    <span><i class="fas fa-sign-out-alt"></i></span>
-                    Sign out</a>
+                <div class="ml-auto d-flex align-items-center">
+                    <p onclick="toggleMessage()" class="message-contact mr-4"><i class="fas fa-comments"></i></p>
+                    <a class="btn btn-so" href="/log-out">
+                        <span><i class="fas fa-sign-out-alt"></i></span>
+                        Sign out</a>
+                </div>
                 <style>
-                    .btn-so{
+                    .message-contact {
+                        font-size: 1.5em;
+                        margin-bottom: 0px;
+                        color: white;
+                        cursor: pointer;
+                    }
+
+                    .message-contact:hover {
+                        color: orange;
+                    }
+
+                    .btn-so {
                         border-color: #007bff;
                         color: #007bff;
                     }
-                    .btn-so:hover{
+
+                    .btn-so:hover {
                         color: white;
                         background-color: #007bff;
                     }
@@ -96,13 +159,6 @@
             </nav>
         </div>
         <style>
-            /* a:link {
-                text-decoration: none;
-            }
-
-            a:visited {
-                text-decoration: none;
-            } */
 
             .tool-board {
                 background-color: #353c51;
@@ -143,7 +199,7 @@
                         <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">Editing ...</a></p>
                     </div>
                     <div class="col-md-3" style="padding: 0px 0px;">
-                        <img  id="avatar-acc" src="/views/pblic/img/unknown-avatar.jpg" alt=""
+                        <img id="avatar-acc" src="/views/pblic/img/unknown-avatar.jpg" alt=""
                             style="border:outset 4px lightgray;width: 100%;height: auto;border-radius: 50%;">
                     </div>
                 </div>
@@ -161,13 +217,7 @@
                                 lead-in to additional content.</p>
                         </div>
                         <div class="col-auto d-none d-lg-block">
-                            <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
-                                preserveAspectRatio="xMidYMid slice" focusable="false" role="img"
-                                aria-label="Placeholder: Thumbnail">
-                                <title>Placeholder</title>
-                                <rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%"
-                                    fill="#eceeef" dy=".3em">Thumbnail</text>
-                            </svg>
+                            <img src="/views/pblic/img/payment.png" width="200" height="250"></img>
                         </div>
                     </div>
                 </div>
@@ -182,20 +232,30 @@
                                 additional content.</p>
                         </div>
                         <div class="col-auto d-none d-lg-block">
-                            <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
-                                preserveAspectRatio="xMidYMid slice" focusable="false" role="img"
-                                aria-label="Placeholder: Thumbnail">
-                                <title>Placeholder</title>
-                                <rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%"
-                                    fill="#eceeef" dy=".3em">Thumbnail</text>
-                            </svg>
+                            <img src="/views/pblic/img/tracking.png" width="200" height="250"></img>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+    <div class="toasts" id="toasts" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toasts-header">
+            <strong class="mr-auto">Message</strong>
+            <button onclick="toggleMessage()" type="button" class="ml-2 mb-1 close" data-dismiss="toast"
+                aria-label="Close">
+                <span aria-hidden="true">x</span>
+            </button>
+        </div>
+        <div class="toasts-body">
+            <small>We will contact to you on your sign email!</small>
+            <div class="form-group">
+                <textarea id="text-consu" class="form-control" rows="4"></textarea>
+            </div>
+            <button type="submit" id="btn-consufused" class="btn btn-primary mb-2">Send</button>
+        </div>
+    </div>
+    </div>
 </body>
 <script>
     $.ajax({
@@ -208,8 +268,30 @@
             $('#add-acc').text(res.Address);
             $('#mail-acc').text(res.Email);
             $('#dob-acc').text(res.DOB);
-            $('#avatar-acc').attr('src',res.Avatar)
+            $('#avatar-acc').attr('src', res.Avatar)
         }
+    })
+    function toggleMessage() {
+        document.getElementById('toasts').classList.toggle('show')
+    }
+
+    $('#btn-consufused').click(e => {
+
+        $.ajax({
+            url: "/cus-consufused/request",
+            type: "POST",
+            data: {
+                Text: $('#text-consu').val()
+            }
+        }).done(res => {
+            if (res) {
+                alert("Your message has been sent!")
+            }
+            else{
+                alert("You have restricted messages")
+            }
+            toggleMessage()
+        })
     })
 </script>
 

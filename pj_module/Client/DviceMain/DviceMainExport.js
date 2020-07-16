@@ -5,72 +5,92 @@ const DBMS = require("../../Config/DBMS");
 
 module.exports = function (app, Users, ObjectId) {
   Users.collection("ClientDeviceControl")
-    .find({})
+    .find()
     .toArray((err, res) => {
       if (err) throw err;
       // console.log("GPSDeviceCollection");
       // console.log(res);
     });
 
-    app.post("/cli-main/get-gps-information", (req, res) => {
-      Users.collection(DBMS.GPSDeviceCollection)
-        .find(
-          {
-            DeviceOwnerID: req.user.id,
-          },
-          { projection: { DeviceStatus: 1, DeviceData: 1 } }
-        )
-        .toArray(function (err, response) {
-          // console.log(response)
-          res.send(response);
-        });
-    });
-  
-    app.post("/cli-main/update-zone-latLngRad", (req, res) => {
-      Users.collection(DBMS.ClientDeviceControl).updateOne(
-        {
-          _id: ObjectId(req.body._id),
-          OwnerId: req.user.id,
-          GPSID: req.body.GPSID,
-        },
-        {
-          $set: {
-            Data: [parseFloat(req.body.Long), parseFloat(req.body.Lat)],
-            Radius: parseInt(req.body.Radius),
-          },
-        }
-      );
-      res.send("zone update")
-    });
+  // app.get("/device-trackings", (req, res) => {
+  //   res.render("deviceMain", { id: req.user.id });
+  // });
 
-  app.post("/cli-main/add-new-zone", (req,res) => {
-    Users.collection(DBMS.ClientDeviceControl).insertOne({
-      OwnerId: req.user.id,
-      GPSID: req.body.GPSID,
-      GPSName: '',
-      InformID: '',
-      InformName: '',
-      Radius: parseInt(req.body.Radius),
-      Data: [ parseFloat(req.body.Long), parseFloat(req.body.Lat) ]
-    })
-    res.send("add new zone")
-  })
+  app.post("/cli-main/get-gps-information", (req, res) => {
+    Users.collection(DBMS.GPSDeviceCollection)
+      .find(
+        {
+          DeviceOwnerID: req.user.id,
+        },
+        { projection: { DeviceStatus: 1, DeviceData: 1 } }
+      )
+      .toArray(function (err, response) {
+        // console.log(response)
+        res.send(response);
+      });
+  });
+
+  app.post("/cli-main/update-zone-latLngRad", (req, res) => {
+    var DataIndex = {};
+    DataIndex["Data." + req.body.index] = [
+      parseInt(req.body.Radius),
+      parseFloat(req.body.Long),
+      parseFloat(req.body.Lat),
+    ];
+    Users.collection(DBMS.ClientDeviceControl).updateOne(
+      {
+        OwnerID: req.user.id,
+        GPSID: req.body.GPSID,
+      },
+      {
+        $set: DataIndex,
+      }
+    );
+    res.send("zone update");
+  });
+
+  app.post("/cli-main/add-new-zone", (req, res) => {
+    Users.collection(DBMS.ClientDeviceControl).updateOne(
+      {
+        OwnerID: req.user.id,
+        GPSID: req.body.GPSID,
+      },
+      {
+        $push: {
+          Data: [
+            parseInt(req.body.Radius),
+            parseFloat(req.body.Long),
+            parseFloat(req.body.Lat),
+          ],
+        },
+      }
+    );
+    res.send("add new zone");
+  });
 
   app.post("/cli-main/delete-zone", (req, res) => {
-    Users.collection(DBMS.ClientDeviceControl).deleteOne(
+    Users.collection(DBMS.ClientDeviceControl).updateOne(
       {
-        _id: ObjectId(req.body._id),
-        OwnerId: req.user.id,
+        OwnerID: req.user.id,
         GPSID: req.body.GPSID,
+      },
+      {
+        $pull: {
+          Data: [
+            parseInt(req.body.Radius),
+            parseFloat(req.body.Long),
+            parseFloat(req.body.Lat),
+          ],
+        },
       }
-    )
-    res.send("zone deleted")
-  })
+    );
+    res.send("zone deleted");
+  });
 
   app.post("/cli-main/get-zone-information", (req, res) => {
     Users.collection(DBMS.ClientDeviceControl)
       .find({
-        OwnerId: req.user.id,
+        OwnerID: req.user.id,
         GPSID: req.body.GPSID,
       })
       .toArray(function (err, response) {

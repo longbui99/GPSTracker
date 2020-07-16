@@ -51,7 +51,7 @@ var User = null;
 client.connect().then(token => {
   User = token.db(DBMS.DatabaseName);
   // Config all dbms
-
+  
 
   AuthRequest(app, User, ObjectId)
   DeviceMain(app, User, ObjectId)

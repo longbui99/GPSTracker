@@ -69,5 +69,11 @@
         "DeviceDateIn":"",
         "DeviceName":"LED",
         "DeviceData":null
+    },
+    "MessageCollection":{
+        "_id":"12332312",
+        "message":"323123213ko21k3po123o1p23i12op3i12op3i12o",
+        "isReading":0,
+        "Date": "312032132"
     }
 }

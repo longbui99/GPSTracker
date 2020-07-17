@@ -3,6 +3,13 @@
 const DBMS = require('../../Config/DBMS')
 
 module.exports = function (app, User, ObjectId) {
+
+    app.get('/device-trackings', (req,res)=>{
+        if (req.isAuthenticated() && req.user.typePosition){
+            res.render('deviceMain',{ id: req.user.id })
+        }
+    })
+
     app.get("/home", function (req, res) {
         if (req.isAuthenticated() && req.user.typePosition) {
             res.render('CliHome')

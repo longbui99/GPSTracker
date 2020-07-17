@@ -26,6 +26,7 @@ app.use(express.static('./pblic'));
 
 app.set('view engine', 'ejs');
 app.set('views', './pblic/views');
+app.set('static', './pblic/Adm/static');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(expressSession({

@@ -4,7 +4,7 @@
 const DBMS = require('../../Config/DBMS')
 
 module.exports = function (app, User, ObjectId) {
-    app.get('/cli-main/gps-control-add', (req, res) => {
+    app.get('/device-settings', (req, res) => {
         res.render('addDevice', { id: req.user.id })
     })
 
@@ -42,7 +42,7 @@ module.exports = function (app, User, ObjectId) {
 
 
     app.post('/cli-main/add-device', async (req, res) => {
-        console.log("On add device:\n", req.body)
+        // console.log("On add device:\n", req.body)
         let returnVal = await User.collection(DBMS.GPSDeviceCollection).updateOne({
             _id: ObjectId(req.body.DeviceID)
         }, {
@@ -79,7 +79,7 @@ module.exports = function (app, User, ObjectId) {
     })
     app.post('/cli-main/get-all-device', async (req, res) => {
 
-        console.log("On get devices:\n", req.body)
+        // console.log("On get devices:\n", req.body)
         let GPSList = await User.collection(DBMS.GPSDeviceCollection).find({
             DeviceOwnerID:  req.user.id
         }, {
@@ -118,7 +118,7 @@ module.exports = function (app, User, ObjectId) {
         res.send(lst)
     })
     app.post('/cli-main/settings-device', (req, res) => {
-        console.log("On settings devices:\n", req.body)
+        // console.log("On settings devices:\n", req.body)
         let List = JSON.parse(req.body.List)
         for(let i = 0; i < List.length; i++){
             User.collection(DBMS.ClientDeviceControl).updateOne({

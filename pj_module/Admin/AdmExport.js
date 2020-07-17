@@ -6,6 +6,7 @@ const Mail = require('../MailInf/MailExport');
 const Parse = require('./AdmModule/Parse')
 
 module.exports = function (app, User, ObjectId) {
+
     app.post('/admin-home/get-mini-acc-state', async (req, res) => {
         let returnVal = await User.collection(DBMS.ClientInfoCollection).aggregate([
             { $group: { _id: "$State", count: { $sum: 1 } } }

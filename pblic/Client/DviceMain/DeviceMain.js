@@ -6,6 +6,7 @@ let map;
 let circle;
 let circles = [];
 let marker;
+let lastEditingCircle = null;
 
 // Get origin data, set to orign element
 $.ajax({
@@ -60,6 +61,7 @@ $.ajax({
             " <button class='btn btn-outline-secondary align-middle btn-block' type='button' id='edit-btn'>Edit</button>"
           ).on("click", function () {
             $("#lat-lng-rad").hide();
+            lastEditingCircle = null;
 
             $("#input-info").show("fade");
             $("#input-info")
@@ -267,6 +269,10 @@ $.ajax({
                   function (event) {
                     let onMapclick;
 
+                    if (lastEditingCircle)
+                      resetCircle(circles, lastEditingCircle, zones);
+                    lastEditingCircle = zone;
+
                     $("#" + zones[0].Data.indexOf(zone)).trigger("click");
 
                     if (event) event.stop();
@@ -469,6 +475,14 @@ function inputValidate(input) {
   var pattern = /[+-]?([0-9]*[.])?[0-9]+/;
   match = $(input).val().match(pattern);
   return match && $(input).val() === match[0];
+}
+
+function resetCircle(circles, zone, zones) {
+  circles[zones[0].Data.indexOf(zone)].setCenter({
+    lat: zone[2],
+    lng: zone[1],
+  });
+  circles[zones[0].Data.indexOf(zone)].setRadius(zone[0]);
 }
 
 // Initial  socket connection (real time connection)

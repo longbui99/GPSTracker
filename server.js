@@ -23,10 +23,10 @@ const CLIHOME = require('./pj_module/Client/Home/CliHomeExport')
 // Config server  
 app.use(cors())
 app.use(express.static('./pblic'));
+app.use('/static',express.static('pblic/Adm/static'))
 
 app.set('view engine', 'ejs');
 app.set('views', './pblic/views');
-app.set('static', './pblic/Adm/static');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(expressSession({
@@ -35,6 +35,7 @@ app.use(expressSession({
     maxAge: 1000 * 60 * 100
   }
 }));
+app.use('/static',express.static('Adm/static'))
 const PORT = process.env.PORT || 5000;
 server.listen(PORT);
 

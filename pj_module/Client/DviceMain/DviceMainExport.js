@@ -4,7 +4,7 @@ const DBMS = require("../../Config/DBMS");
 // User: Database
 
 module.exports = function (app, Users, ObjectId) {
-  Users.collection("ClientDeviceControl")
+  Users.collection("GPSDeviceCollection")
     .find()
     .toArray((err, res) => {
       if (err) throw err;

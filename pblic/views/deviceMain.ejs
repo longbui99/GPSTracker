@@ -35,7 +35,53 @@
     <p id="user-id-socket" style="display: none;"><%= id %></p>
     <div class="container-fluid">
       <div id="map"></div>
-
+      <div
+        id="nav_button_bar"
+        style="position: absolute; top: 10px; right: 5px;"
+      >
+        <button
+          class=""
+          style="width: 60px; height: 50px; cursor: pointer;"
+          onclick="btnToggle(this); location.href='http://localhost:5000/home'"
+        >
+          <i class="fa fa-home fa-3x" aria-hidden="true"></i>
+        </button>
+        <button
+          class=""
+          style="width: 60px; height: 50px; cursor: pointer;"
+          onclick="btnToggle(this); location.href='http://localhost:5000/management-account'"
+        >
+          <i class="fa fa-user-circle-o fa-3x" aria-hidden="true"></i>
+        </button>
+        <button
+          class=""
+          onclick="btnToggle(this)"
+          style="width: 60px; height: 50px; cursor: pointer;"
+        >
+          <i class="fa fa-plus-circle fa-3x" aria-hidden="true"></i>
+        </button>
+        <button
+          class=""
+          onclick="btnToggle(this)"
+          style="width: 60px; height: 50px; cursor: pointer;"
+        >
+          <i class="fa fa-cog fa-3x" aria-hidden="true"></i>
+        </button>
+        <button
+          class="active-btn"
+          style="width: 60px; height: 50px; cursor: pointer;"
+          onclick="btnToggle(this); location.href='http://localhost:5000/device-trackings'"
+        >
+          <i class="fa fa-map-marker fa-3x" aria-hidden="true"></i>
+        </button>
+        <button
+          class=""
+          style="width: 60px; height: 50px; cursor: pointer;"
+          onclick="btnToggle(this); location.href='http://localhost:5000/log-out'"
+        >
+          <i class="fa fa-sign-out fa-3x" aria-hidden="true"></i>
+        </button>
+      </div>
       <div id="panel">
         <div id="device-panel" class="rounded-lg">
           <div
@@ -238,14 +284,14 @@
     >
       <strong>Hint</strong> You can edit zone via input or double click on
       circle.
-      <button
+      <p
         id="close-input-info"
         type="button"
-        class="close"
         aria-label="Close"
+        data-dismiss="alert"
       >
-        <span aria-hidden="true">&times;</span>
-      </button>
+        <u>Got it.</u>
+      </p>
     </div>
     <div
       id="my-success"

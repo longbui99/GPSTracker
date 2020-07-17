@@ -19,12 +19,16 @@ body {
   position: relative;
 }
 
+.active-btn {
+  background-color: #555;
+  color: #f1f1f1;
+}
+
 #panel {
   width: 500px;
-
   position: absolute;
-  top: 50px;
-  right: 50px;
+  top: 65px;
+  right: 5px;
 }
 
 #device-panel,
@@ -75,7 +79,6 @@ body {
   padding-left: 20px;
   padding-right: 20px;
 }
-
 
 .coord-cursor {
   /* cursor: crosshair; */

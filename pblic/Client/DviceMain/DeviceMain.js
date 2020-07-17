@@ -68,9 +68,6 @@ $.ajax({
                 $("#input-info").slideUp(500);
                 $("#input-info").hide("fade");
               });
-            $("#close-input-info").on("click", function () {
-              $("#input-info").hide("fade");
-            });
 
             //get safe Zone
             $.ajax({
@@ -112,6 +109,13 @@ $.ajax({
                       j +
                       "</button>"
                   ).on("click", function () {
+                    //Reset circle
+                    circles[zones[0].Data.indexOf(zone)].setCenter({
+                      lat: zone[2],
+                      lng: zone[1],
+                    });
+                    circles[zones[0].Data.indexOf(zone)].setRadius(zone[0]);
+
                     // toggle buttons
                     $(".zone-buttons-container").off("click");
                     $(".zone-buttons-container").on("click", ".btn", () => {
@@ -332,12 +336,15 @@ $.ajax({
               });
             });
 
-            $(".input-new-lat-lng-rad").off("change keyup blur");
-            $(".input-new-lat-lng-rad").on("change keyup blur", function (
-              event
-            ) {
+            $(".input-new-lat-lng-rad").off("change keyup");
+            $(".input-new-lat-lng-rad").on("change keyup", function (event) {
               // //only allow numeric
-              if (!inputValidate(this)) {
+              if (
+                !inputValidate(this) &&
+                ($("#new-lat").val() !== "" ||
+                  $("#new-lng").val() !== "" ||
+                  $("#new-rad").val() !== "")
+              ) {
                 $("#add-new-zone-btn").attr("disabled", true);
                 $("#add-new-zone-btn").addClass("disable-cursor");
 
@@ -436,6 +443,11 @@ $("#start-add-zone-btn").on("click", () => {
     });
   });
 });
+
+function btnToggle(btn) {
+  $(btn).addClass("active-btn");
+  $(btn).siblings().removeClass("active-btn");
+}
 
 function mapFocus(circle) {
   map.panTo(circle.getCenter());

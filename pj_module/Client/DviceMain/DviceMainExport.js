@@ -4,17 +4,7 @@ const DBMS = require("../../Config/DBMS");
 // User: Database
 
 module.exports = function (app, Users, ObjectId) {
-  Users.collection("ClientDeviceControl")
-    .find()
-    .toArray((err, res) => {
-      if (err) throw err;
-      // console.log("GPSDeviceCollection");
-      // console.log(res);
-    });
-
-  // app.get("/device-trackings", (req, res) => {
-  //   res.render("deviceMain", { id: req.user.id });
-  // });
+  
 
   app.post("/cli-main/get-gps-information", (req, res) => {
     Users.collection(DBMS.GPSDeviceCollection)

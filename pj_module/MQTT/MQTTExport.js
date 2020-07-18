@@ -33,7 +33,7 @@ exports.initMQTTConnect = async function (io, User, ObjectId) {
                             User.collection(DBMS.GPSDeviceCollection).insertOne({
                                 _id: id,
                                 DeviceStatus: 0,
-                                DeviceOwnerID: null,
+                                DeviceOwnerID: "",
                                 DeviceName:"GPS",
                                 DeviceDateIn: new Date().toISOString().substring(0, 10),
                                 DeviceData: {
@@ -59,7 +59,6 @@ exports.initMQTTConnect = async function (io, User, ObjectId) {
                                 }
                             )
                             if (res.modifiedCount == 1) {
-                                console.log("OKOK")
                                 io.to(returnVal.DeviceOwnerID).emit('emit-new-gps', {
                                     gpsID: id,
                                     data: data

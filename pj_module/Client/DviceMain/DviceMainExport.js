@@ -4,21 +4,21 @@ const DBMS = require("../../Config/DBMS");
 // User: Database
 
 module.exports = function (app, Users, ObjectId) {
-<<<<<<< HEAD
-  Users.collection("GPSDeviceCollection")
-    .find()
-    .toArray((err, res) => {
-      if (err) throw err;
-      // console.log("GPSDeviceCollection");
-      // console.log(res);
-    });
+// <<<<<<< HEAD
+//   Users.collection("GPSDeviceCollection")
+//     .find()
+//     .toArray((err, res) => {
+//       if (err) throw err;
+//       // console.log("GPSDeviceCollection");
+//       // console.log(res);
+//     });
 
-  // app.get("/device-trackings", (req, res) => {
-  //   res.render("deviceMain", { id: req.user.id });
-  // });
-=======
+//   // app.get("/device-trackings", (req, res) => {
+//   //   res.render("deviceMain", { id: req.user.id });
+//   // });
+// =======
   
->>>>>>> aba210c4c57cb40c648b63a41eb9a7bcaf0544b3
+// >>>>>>> aba210c4c57cb40c648b63a41eb9a7bcaf0544b3
 
   app.post("/cli-main/get-gps-information", (req, res) => {
     Users.collection(DBMS.GPSDeviceCollection)

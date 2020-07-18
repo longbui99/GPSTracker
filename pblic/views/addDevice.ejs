@@ -129,9 +129,9 @@
                 if (search == ''){
                     alert('Please type Device ID')
                 }
-                else if (idLength != 24){
-                    alert('Device ID must be string of 24 hex characters')
-                }
+                // else if (idLength != 24){
+                //     alert('Device ID must be string of 24 hex characters')
+                // }
                 else {
                     $.ajax({
                         url: "/cli-main/search-device",

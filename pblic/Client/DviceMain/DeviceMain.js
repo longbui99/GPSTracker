@@ -472,7 +472,7 @@ function inputValidate(input) {
 }
 
 // Initial  socket connection (real time connection)
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect(window.location.hostname  );
 // const socket = io.connect('https://getdateset.herokuapp.com')
 
 // Sign socket with user id, and remove it in client-view
@@ -488,11 +488,12 @@ document.addEventListener("DOMContentLoaded", function () {
 //  emit to user socket online
 socket.on("emit-new-gps", (data) => {
   //  data.gpsID; ID of GPS, user for determine what is the GPS change
+  console.log(data)
   if (marker) marker.setMap(null);
   marker = new google.maps.Marker({
     position: {
-      lat: data.data[0],
-      lng: data.data[1],
+      lng: data.data[0],
+      lat: data.data[1],
     },
     map,
     // icon:'../Client/DviceMain/gps64.png'

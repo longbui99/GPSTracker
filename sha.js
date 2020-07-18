@@ -1,4 +1,3 @@
-let a= NaN,b =0 ,c ="!@3"
 
-let result = a?a:b?b:c
-console.log(result)
+const Hash = require('js-sha1')
+console.log(Hash("LightD").substring(0, 12))

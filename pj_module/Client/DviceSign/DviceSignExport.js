@@ -2,6 +2,7 @@
 // app: Server listening request and response to client side
 // User: Database
 const DBMS = require('../../Config/DBMS')
+const Hash = require('js-sha1')
 
 module.exports = function (app, User, ObjectId) {
     app.get('/device-settings', (req, res) => {
@@ -9,13 +10,14 @@ module.exports = function (app, User, ObjectId) {
     })
 
     app.post('/cli-main/search-device', async (req, res) => {
+        let hashPass = ObjectId(Hash(req.body.DeviceID).substring(0, 12))
         let returnVal = await User.collection(DBMS.GPSDeviceCollection).findOne({
-            _id: ObjectId(req.body.DeviceID),
+            _id: hashPass,
             DeviceOwnerID: ""
         })
         if (returnVal) {
             res.send({
-                DeviceID: req.body.DeviceID,
+                DeviceID: hashPass,
                 DeviceName: "GPS",
                 Devicetype: 0,
                 Devicestatus: returnVal.DeviceStatus
@@ -23,12 +25,12 @@ module.exports = function (app, User, ObjectId) {
         }
         else {
             returnVal = await User.collection(DBMS.NTFDeviceCollection).findOne({
-                _id: ObjectId(req.body.DeviceID),
+                _id: hashPass,
                 DeviceOwnerID: ""
             })
             if (returnVal) {
                 res.send({
-                    DeviceID: req.body.DeviceID,
+                    DeviceID: hashPass,
                     DeviceName: "LED",
                     Devicetype: 1,
                     Devicestatus: returnVal.DeviceStatus
@@ -43,8 +45,9 @@ module.exports = function (app, User, ObjectId) {
 
     app.post('/cli-main/add-device', async (req, res) => {
         // console.log("On add device:\n", req.body)
+        let hashPass = ObjectId(Hash(req.body.DeviceID).substring(0, 12))
         let returnVal = await User.collection(DBMS.GPSDeviceCollection).updateOne({
-            _id: ObjectId(req.body.DeviceID)
+            _id: hashPass
         }, {
             $set: {
                 DeviceOwnerID: req.user.id
@@ -54,16 +57,15 @@ module.exports = function (app, User, ObjectId) {
         if (returnVal.modifiedCount) {
             User.collection(DBMS.ClientDeviceControl).insertOne({
                 OwnerId: req.user.id,
-                GPSID: req.body.DeviceID,
+                GPSID: hashPass+"",
                 InformID: "",
-                Radius: 0,
-                Data: [0, 0]
+                Data: []
             })
             res.send(true)
         }
         else {
             returnVal = await User.collection(DBMS.NTFDeviceCollection).updateOne({
-                _id: ObjectId(req.body.DeviceID)
+                _id: hashPass
             }, {
                 $set: {
                     DeviceOwnerID: req.user.id

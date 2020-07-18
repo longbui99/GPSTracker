@@ -2,30 +2,46 @@
 let countTime = 0;
 let IpLong = document.getElementById("logitude");
 let IpLat = document.getElementById("latitude");
+var labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+var labelIndex = 0;
 let map;
 let circle;
 let circles = [];
-let marker;
+let markers = new Map();
+let lastEditingCircle = null;
 
 // Get origin data, set to orign element
 $.ajax({
   url: "/cli-main/get-gps-information",
   type: "POST",
 }).done((result) => {
+  var marker;
   $("#zone-panel").hide();
   $("#lat-lng-rad").hide();
 
   //default map view
   initMap(30, 30, 2);
+
   //Create a list of gps devices
-  i = 1;
   result.forEach((device) => {
+    //create marker for that gps
+    marker = new google.maps.Marker({
+      position: {
+        lat: parseFloat(device.DeviceData.Latitude),
+        lng: parseFloat(device.DeviceData.Longitude),
+      },
+      label: labels[labelIndex++ % labels.length],
+      map,
+      // icon:'../Client/DviceMain/gps64.png'
+    });
+    markers.set(device._id, marker);
+
     $("#device-buttons-container").append(
       $(
         " <button id='" +
           device._id +
           "' class='btn btn-outline-secondary ml-2 mb-2 force-overflow' type='button' id='button-addon2'>GPS " +
-          i +
+          marker.getLabel() +
           "</button>"
       ).on("click", function () {
         $("edit-btn").trigger("click");
@@ -40,19 +56,12 @@ $.ajax({
         });
 
         //focus map
-        initMap(device.DeviceData.Latitude, device.DeviceData.Longitude, 5);
-
-        //create marker for that gps
-
-        if (marker) marker.setMap(null);
-        marker = new google.maps.Marker({
-          position: {
-            lat: parseFloat(device.DeviceData.Latitude),
-            lng: parseFloat(device.DeviceData.Longitude),
-          },
-          map,
-          // icon:'../Client/DviceMain/gps64.png'
+        // initMap(device.DeviceData.Latitude, device.DeviceData.Longitude, 5);
+        map.panTo({
+          lat: device.DeviceData.Latitude,
+          lng: device.DeviceData.Longitude,
         });
+        map.setZoom(5);
 
         $("#edit-btn-container").empty();
         $("#edit-btn-container").append(
@@ -60,6 +69,7 @@ $.ajax({
             " <button class='btn btn-outline-secondary align-middle btn-block' type='button' id='edit-btn'>Edit</button>"
           ).on("click", function () {
             $("#lat-lng-rad").hide();
+            lastEditingCircle = null;
 
             $("#input-info").show("fade");
             $("#input-info")
@@ -189,7 +199,7 @@ $.ajax({
                                   ].getRadius()
                                 : parseFloat($("#radius").val())
                             );
-
+                            mapFocus(circles[zones[0].Data.indexOf(zone)]);
                             $(".container-fluid").off("click");
                             // google.maps.event.trigger(circles[zones[0].Data.indexOf(zone)], "dblclick");
                           }
@@ -266,6 +276,10 @@ $.ajax({
                   "dblclick",
                   function (event) {
                     let onMapclick;
+
+                    if (lastEditingCircle)
+                      resetCircle(circles, lastEditingCircle, zones);
+                    lastEditingCircle = zone;
 
                     $("#" + zones[0].Data.indexOf(zone)).trigger("click");
 
@@ -420,7 +434,10 @@ $.ajax({
         );
       })
     );
-    i++;
+    google.maps.event.clearListeners(marker, "click");
+    google.maps.event.addListener(marker, "click", () => {
+      $("#" + device._id).trigger("click");
+    });
   });
 });
 
@@ -471,8 +488,17 @@ function inputValidate(input) {
   return match && $(input).val() === match[0];
 }
 
+function resetCircle(circles, zone, zones) {
+  circles[zones[0].Data.indexOf(zone)].setCenter({
+    lat: zone[2],
+    lng: zone[1],
+  });
+  circles[zones[0].Data.indexOf(zone)].setRadius(zone[0]);
+}
+
 // Initial  socket connection (real time connection)
-const socket = io.connect(window.location.hostname  );
+const socket = io.connect("http://localhost:5000");
+// const socket = io.connect(window.location.hostname);
 // const socket = io.connect('https://getdateset.herokuapp.com')
 
 // Sign socket with user id, and remove it in client-view
@@ -488,16 +514,18 @@ document.addEventListener("DOMContentLoaded", function () {
 //  emit to user socket online
 socket.on("emit-new-gps", (data) => {
   //  data.gpsID; ID of GPS, user for determine what is the GPS change
-  console.log(data)
-  if (marker) marker.setMap(null);
+  var lbl = markers.get(data.gpsID).getLabel();
+  markers.get(data.gpsID).setMap(null);
   marker = new google.maps.Marker({
     position: {
-      lng: data.data[0],
       lat: data.data[1],
+      lng: data.data[0],
     },
+    label: lbl,
     map,
     // icon:'../Client/DviceMain/gps64.png'
   });
+  markers.set(data.gpsID, marker);
 });
 
 // Whenever data change, MQTT, User change, ...,

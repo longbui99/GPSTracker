@@ -56,7 +56,7 @@ module.exports = function (app, User, ObjectId) {
         // console.log(returnVal)
         if (returnVal.modifiedCount) {
             User.collection(DBMS.ClientDeviceControl).insertOne({
-                OwnerId: req.user.id,
+                OwnerID: req.user.id,
                 GPSID: hashPass+"",
                 InformID: "",
                 Data: []

@@ -22,12 +22,12 @@
         <div class="container-fluid">
             <div id="googleMap"></div>
             <div class="my_button">
-                <button style="width: 60px; height: 50px; cursor: pointer;"><i class="fa fa-home fa-3x" aria-hidden="true"></i></button>
-                <button style="width: 60px; height: 50px; cursor: pointer;" ><i class="fa fa-user-circle-o fa-3x" aria-hidden="true"></i></button>
-                <button style="width: 60px; height: 50px; cursor: pointer;" onclick="addDeviceOn()"><i class="fa fa-plus-circle fa-3x" aria-hidden="true"></i></button>
-                <button style="width: 60px; height: 50px; cursor: pointer;" id="setting"><i class="fa fa-cog fa-3x" aria-hidden="true"></i></button>
-                <button style="width: 60px; height: 50px; cursor: pointer;"><i class="fa fa-map-marker fa-3x" aria-hidden="true"></i></button>
-                <button style="width: 60px; height: 50px; cursor: pointer;"><i class="fa fa-sign-out fa-3x" aria-hidden="true"></i></button>
+                <button style="width: 60px; height: 50px; cursor: pointer;" class='b'><i class="fa fa-home fa-3x" aria-hidden="true"></i></button>
+                <button style="width: 60px; height: 50px; cursor: pointer;" class='b'><i class="fa fa-user-circle-o fa-3x" aria-hidden="true"></i></button>
+                <button style="width: 60px; height: 50px; cursor: pointer;" class='b' id="add" onclick="addDeviceOn()"><i class="fa fa-plus-circle fa-3x" aria-hidden="true"></i></button>
+                <button style="width: 60px; height: 50px; cursor: pointer;" class='b' id="setting"><i class="fa fa-cog fa-3x" aria-hidden="true"></i></button>
+                <button style="width: 60px; height: 50px; cursor: pointer;" class='b' ><i class="fa fa-map-marker fa-3x" aria-hidden="true"></i></button>
+                <button style="width: 60px; height: 50px; cursor: pointer;" class='b'><i class="fa fa-sign-out fa-3x" aria-hidden="true"></i></button>
             </div>
             <div id="addDevice">
                 <h3>New device</h3>
@@ -44,7 +44,7 @@
                     </div>
                     <div>
                         <p>Device ID: <span id="id"></span></p>
-                        <p>Device name: <span id="name"></span></p>
+                        <!-- <p>Device name: <span id="name"></span></p> -->
                         <p>Type: <span id="type"></span></p>
                         <p>State: <span id="state"></span></p>
                     </div>
@@ -76,6 +76,7 @@
         <script>
             var x = new Boolean(false)
             var y = new Boolean(false)
+            var b = document.getElementsByClassName('b')
             function myMap() {
                 var mapProp= {
                     center:new google.maps.LatLng(10.880693, 106.804869),
@@ -88,10 +89,16 @@
                 y = false;
                 if (x == true){
                     document.getElementById("addDevice").style.display = "none";
+                    b[2].style.removeProperty('background')
+                    b[2].style.removeProperty('color')
                     x = false;
                 }
                 else{
                     document.getElementById("addDevice").style.display = "block";
+                    b[2].style.background = "#353c51";
+                    b[2].style.color = "white";
+                    b[3].style.removeProperty('background')
+                    b[3].style.removeProperty('color')
                     x = true;
                 }
             }
@@ -101,15 +108,20 @@
                 //document.getElementById("settingDevice").style.display = "block";
                 if (y == true){
                     document.getElementById("settingDevice").style.display = "none";
+                    b[3].style.removeProperty('background')
+                    b[3].style.removeProperty('color')
                     y = false;
                 }
                 else{
                     document.getElementById("settingDevice").style.display = "block";
+                    b[2].style.removeProperty('background')
+                    b[2].style.removeProperty('color')
+                    b[3].style.background = "#353c51";
+                    b[3].style.color = "white";
                     y = true;
                 }
             }
             
-
             let id = document.getElementById("id")
             let name = document.getElementById("name")
             let type = document.getElementById("type")
@@ -121,17 +133,41 @@
             // $("add_button").click((e) => {
             //     console.log("abc");
             // })
+            let marker = []
+            $("#add").click(function(){
+                if (x == true){
+                    $.ajax({
+                        url: "/cli-main/get-all-device",
+                        type: "POST",
+                    }).done((result) => {
+                        if (result.length > 0){
+                            var mapProp= {
+                                center:new google.maps.LatLng(10.880693, 106.804869),
+                                zoom:5,
+                            };
+                            var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+                        }
+                        for (let i=0; i< result.length; i++){
+                            if (result[i].Devicetype == 0){
+                                console.log(result[i].Data.Latitude)
+                                //console.log(result[i].coordinate)
+                                marker[i] = new google.maps.Marker({
+                                    position: {lat: result[i].Data.Latitude, lng: result[i].Data.Longitude},
+                                    //position: {lat: 10.880693, lng: 106.804869},
+                                    map: map,
+                                    title: 'GPS Name: ' + result[i].DeviceName
+                                });
+                            }
+                        }
+                    })
+                }
+            })
             $("#search").click(function() {
                 //console.log("abc");
                 var search = $('#searchID').val();
-                var idLength = search.length;
-                console.log(idLength)
                 if (search == ''){
                     alert('Please type Device ID')
                 }
-                // else if (idLength != 24){
-                //     alert('Device ID must be string of 24 hex characters')
-                // }
                 else {
                     $.ajax({
                         url: "/cli-main/search-device",
@@ -145,10 +181,19 @@
                         }
                         else {
                             document.getElementById("about").style.display = "block";
-                            console.log(result);
+                            //console.log(result.coordinate.Longitude);
+                            // var mapProp= {
+                            //     center:new google.maps.LatLng(result.coordinate.Latitude, result.coordinate.Longitude),
+                            //     zoom:15,
+                            // };
+                            // var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+                            // var marker = new google.maps.Marker({
+                            //     position: {lat: result.coordinate.Latitude, lng: result.coordinate.Longitude},
+                            //     map: map
+                            // });
                             //result = result[0];
                             id.textContent = result.DeviceID;
-                            name.textContent = result.DeviceName;
+                            //name.textContent = result.DeviceName;
                             if (result.Devicetype == 0){
                                 type.textContent = "GPS"
                             }
@@ -163,22 +208,59 @@
             $("#add_button").click(function() {
                 //console.log("abc");
                 var search = $('#searchID').val();
+                var name = prompt("Name your GPS (Max 6 characters):", "");
+                while (name == null || name == "" || name.length > 6){
+                    if (name.length > 6){
+                        alert('The name must be no more than 6 characters');
+                        name = prompt("Name your GPS (Max 6 characters):", "");
+                    }
+                    else{
+                        alert('Please name your GPS')
+                        name = prompt("Name your GPS (Max 6 characters):", "");
+                    }              
+                }
+                console.log(name)
                 //var id = document.getElementById("user-id-socket").textContent;
                 $.ajax({
                     url: "/cli-main/add-device",
                     type: "POST",
                     data: {
                         //DeviceOwnerID: id,
+                        DeviceName: name,
                         DeviceID: search,
                     }
                 }).done((result) => {
                     alert("Device added!")
                     console.log(result);
+                    $.ajax({
+                        url: "/cli-main/get-all-device",
+                        type: "POST",
+                    }).done((result) => {
+                        if (result.length > 0){
+                            var mapProp= {
+                                center:new google.maps.LatLng(10.880693, 106.804869),
+                                zoom:5,
+                            };
+                            var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+                        }
+                        for (let i=0; i< result.length; i++){
+                            if (result[i].Devicetype == 0){
+                                console.log(result[i].Data.Latitude)
+                                //console.log(result[i].coordinate)
+                                marker[i] = new google.maps.Marker({
+                                    position: {lat: result[i].Data.Latitude, lng: result[i].Data.Longitude},
+                                    //position: {lat: 10.880693, lng: 106.804869},
+                                    map: map,
+                                    title: 'GPS Name: ' + result[i].DeviceName
+                                });
+                            }
+                        }
+                    })
                 });
             });
             $("#setting").click(function(){
                 settingOn();
-                var search = $('#searchID').val();
+                // var search = $('#searchID').val();
                 if (y == true){
                     $.ajax({
                         url: "/cli-main/get-all-device",
@@ -187,41 +269,63 @@
                         //     DeviceID: search,
                         // }
                     }).done((result) => {
-                    
+                        for (let i=0; i<result.length; i++){
+                            if (result[i].Devicetype == 0){
+                                GPSIDList[j] = result[i].DeviceID
+                                GPSList[j] = result[i];
+                                // gps.textContent = GPSList[j].DeviceName;
+                                // console.log(GPSList[j].DeviceID);
+                                $("#all-device").append(
+                                    //<label id="GPS" for="GPS" style="margin-right: 50px">GPS</label>
+                                    "<label id='GPS"+j+"'for='GPS' style='margin-right: 130px;'>"+GPSList[j].DeviceName+"</label>"+
+                                    "<img src='/views/pblic/img/tools.png' alt='' width='20px' height ='20px' style='position: absolute; left: 47%; margin-top:2px;'/>"+
+                                    " <select id='choose"+j+"' style='position:relative; left:62px; top:-24px'></select>"+
+                                    "<br></br>"
+                                )
+                                j++;
+                            }
+                        }
+                        for (let m=0; m<j; m++){
+                            for (let k=0; k<result.length; k++){
+                                if (result[k].Devicetype==1){
+                                    // console.log(result[k].DeviceName)
+                                    $("#choose"+m).append(
+                                        "<option value="+result[k].DeviceID+">"+result[k].DeviceName+"</option>"
+                                    )
+                                    //console.log(result[k].DeviceID)
+                                }
+                            }
+                        }
                     });
                 }
             })
-            $.ajax({
-                url: "/cli-main/get-all-device",
-                type: "POST",
-            }).done((result) => {
-                for (let i=0; i<result.length; i++){
-                    if (result[i].Devicetype == 0){
-                        GPSIDList[j] = result[i].DeviceID
-                        GPSList[j] = result[i];
-                        // gps.textContent = GPSList[j].DeviceName;
-                        // console.log(GPSList[j].DeviceID);
-                        $("#all-device").append(
-                            //<label id="GPS" for="GPS" style="margin-right: 50px">GPS</label>
-                            "<label id='GPS"+j+"'for='GPS' style='margin-right: 130px;'>"+GPSList[j].DeviceName+"</label>"+
-                            "<img src='/views/pblic/img/tools.png' alt='' width='20px' height ='20px' style='position: absolute; left: 47%; margin-top:2px;'/>"+
-                            " <select id='choose"+j+"' style='position:relative; left:62px; top:-24px'></select>"+
-                            "<br></br>"
-                        )
-                        j++;
-                    }
-                }
-                for (let m=0; m<j; m++){
-                    for (let k=0; k<result.length; k++){
-                    if (result[k].Devicetype==1){
-                        // console.log(result[k].DeviceName)
-                        $("#choose"+m).append(
-                            "<option value="+result[k].DeviceID+">"+result[k].DeviceName+"</option>"
-                        )
-                    }
-                }
-                }
-            });
+            // $.ajax({
+            //     url: "/cli-main/get-all-device",
+            //     type: "POST",
+            // }).done((result) => {
+            //     for (let i=0; i<result.length; i++){
+            //         if (result[i].Devicetype == 0){
+            //             GPSIDList[j] = result[i].DeviceID
+            //             GPSList[j] = result[i];
+            //             $("#all-device").append(
+            //                 "<label id='GPS"+j+"'for='GPS' style='margin-right: 130px;'>"+GPSList[j].DeviceName+"</label>"+
+            //                 "<img src='/views/pblic/img/tools.png' alt='' width='20px' height ='20px' style='position: absolute; left: 47%; margin-top:2px;'/>"+
+            //                 " <select id='choose"+j+"' style='position:relative; left:62px; top:-24px'></select>"+
+            //                 "<br></br>
+            //             )
+            //             j++;
+            //         }
+            //     }
+            //     for (let m=0; m<j; m++){
+            //         for (let k=0; k<result.length; k++){
+            //             if (result[k].Devicetype==1){
+            //                 $("#choose"+m).append(
+            //                     "<option value="+result[k].DeviceID+">"+result[k].DeviceName+"</option>"
+            //                 )
+            //             }
+            //         }
+            //     }
+            // });
 
             let List = []
 
@@ -252,6 +356,7 @@
                 });
             })
             const socket = io.connect("http://localhost:5000");
+            //const socket = io.connect(window.location.hostname);
             document.addEventListener("DOMContentLoaded", function () {
                 socket.emit(
                     "sign-in-socket",

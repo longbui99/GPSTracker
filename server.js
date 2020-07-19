@@ -48,24 +48,21 @@ var User = null;
 
 
 
-
-
 client.connect().then(token => {
   User = token.db(DBMS.DatabaseName);
   // Config all dbms
-  
 
-  // AuthRequest(app, User, ObjectId)
-  // DeviceMain(app, User, ObjectId)
-  // DeviceSign(app, User, ObjectId)
-  // CustomersProfile(app, User, ObjectId)
-  // AdmManagerMain(app, User, ObjectId)
-  // CLIHOME(app,User,ObjectId)
-  // MailModule.initMailServer(app, User, ObjectId)
-  // RLProtocol(io, User, ObjectId)
-  // MQTTProtocol.initMQTTConnect(io, User, ObjectId)
-  // AnalyzeFunc.Init(app, User, ObjectId, io)
-  // AnalyzeFunc.AnalyzesSystem()
+  AuthRequest(app, User, ObjectId)
+  DeviceMain(app, User, ObjectId)
+  DeviceSign(app, User, ObjectId)
+  CustomersProfile(app, User, ObjectId)
+  AdmManagerMain(app, User, ObjectId)
+  CLIHOME(app,User,ObjectId)
+  MailModule.initMailServer(app, User, ObjectId)
+  RLProtocol(io, User, ObjectId)
+  MQTTProtocol.initMQTTConnect(io, User, ObjectId)
+  AnalyzeFunc.Init(app, User, ObjectId, io)
+  AnalyzeFunc.AnalyzesSystem()
 
 
   // Notification

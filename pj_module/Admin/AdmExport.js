@@ -101,7 +101,7 @@ module.exports = function (app, User, ObjectId) {
 
     app.post('/adm-message/get-mini-list', async (req, res) => {
         let returnVal = await User.collection(DBMS.MessageCollection).aggregate([
-            {
+             {
                 $match: {
                     isReading: 0
                 }
@@ -110,8 +110,8 @@ module.exports = function (app, User, ObjectId) {
             {
                 $lookup: {
                     from: DBMS.ClientInfoCollection,
-                    localField: "_id",    // field in the orders collection
-                    foreignField: "_id",  // field in the items collection
+                    localField: "_id",    
+                    foreignField: "_id",  
                     as: "fromItems"
                 }
             },

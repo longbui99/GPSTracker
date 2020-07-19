@@ -75,27 +75,6 @@ exports.initMQTTConnect = async function (io, User, ObjectId) {
                     // }, 1)
                 }
                 else if (topic == "Topic/LightD") {
-                    message = JSON.parse(message.toString())
-                    // console.log(message)
-                    let i = 0
-                    for (i; i < message.length; i++) {
-                        // message.forEach(async element => {
-                        let DVID = Hash(message[i].device_id).substring(0, 12)
-                        let id = ObjectId(DVID)
-                        let returnVal = await User.collection(DBMS.NTFDeviceCollection).findOne(
-                            { _id: id }
-                        )
-                        if (returnVal == null) {
-                            User.collection(DBMS.NTFDeviceCollection).insertOne({
-                                _id: id,
-                                DeviceStatus: 0,
-                                DeviceOwnerID: "",
-                                DeviceName:"LED",
-                                DeviceDateIn: new Date().toISOString().substring(0, 10),
-                                DeviceData: [255,255]
-                            })
-                        } else {
-                        }
                 }
             })
         })

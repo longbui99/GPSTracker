@@ -20,7 +20,8 @@ module.exports = function (app, User, ObjectId) {
                 DeviceID: hashPass,
                 DeviceName: "GPS",
                 Devicetype: 0,
-                Devicestatus: returnVal.DeviceStatus
+                Devicestatus: returnVal.DeviceStatus,
+                Data:returnVal.DeviceData
             })
         }
         else {
@@ -33,7 +34,8 @@ module.exports = function (app, User, ObjectId) {
                     DeviceID: hashPass,
                     DeviceName: "LED",
                     Devicetype: 1,
-                    Devicestatus: returnVal.DeviceStatus
+                    Devicestatus: returnVal.DeviceStatus,
+                    Data:null
                 })
             }
             else {
@@ -87,7 +89,8 @@ module.exports = function (app, User, ObjectId) {
         }, {
             projection: {
                 _id: 1,
-                DeviceName: 1
+                DeviceName: 1,
+                DeviceData:1
             }
         }).toArray()
         let lst = []
@@ -95,7 +98,8 @@ module.exports = function (app, User, ObjectId) {
             lst.push({
                 DeviceID: GPSList[i]._id,
                 DeviceName: GPSList[i].DeviceName,
-                Devicetype: 0
+                Devicetype: 0,
+                Data:GPSList[i].DeviceData
             }
             )
         }

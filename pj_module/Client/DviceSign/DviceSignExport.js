@@ -52,7 +52,8 @@ module.exports = function (app, User, ObjectId) {
             _id: hashPass
         }, {
             $set: {
-                DeviceOwnerID: req.user.id
+                DeviceOwnerID: req.user.id,
+                DeviceName:req.body.DeviceName
             }
         })
         // console.log(returnVal)
@@ -70,7 +71,8 @@ module.exports = function (app, User, ObjectId) {
                 _id: hashPass
             }, {
                 $set: {
-                    DeviceOwnerID: req.user.id
+                    DeviceOwnerID: req.user.id,
+                    DeviceName:req.body.DeviceName
                 }
             })
             if (returnVal.modifiedCount){

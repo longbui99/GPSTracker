@@ -98,6 +98,18 @@ async function randomeDateDBMS(){
 } 
 
 
+
+async function randomeStateAccount(){
+  let returnVal = await User.collection(DBMS.ClientInfoCollection).find({}).toArray();
+
+  for(let i = 0 ; i < returnVal.length; i ++){
+    let value = randomDate(new Date(2020, 5, 1), new Date()).toISOString().substring(0,10)
+    User.collection(DBMS.ClientInfoCollection).updateOne({_id:returnVal[i]._id},{$set:{DateIn:value}})
+  }
+  console.log("DONE")
+} 
+
+
 app.get('/', (req, res, next) => {
   let myInterval = setInterval(() => {
     if (User != null) {

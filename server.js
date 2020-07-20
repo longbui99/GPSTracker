@@ -52,7 +52,6 @@ client.connect().then(token => {
   User = token.db(DBMS.DatabaseName);
   // Config all dbms
 
-
   AuthRequest(app, User, ObjectId)
   DeviceMain(app, User, ObjectId)
   DeviceSign(app, User, ObjectId)
@@ -103,11 +102,24 @@ async function randomeStateAccount(){
   let returnVal = await User.collection(DBMS.ClientInfoCollection).find({}).toArray();
 
   for(let i = 0 ; i < returnVal.length; i ++){
-    let value = randomDate(new Date(2020, 5, 1), new Date()).toISOString().substring(0,10)
-    User.collection(DBMS.ClientInfoCollection).updateOne({_id:returnVal[i]._id},{$set:{DateIn:value}})
+    let value = Math.floor((Math.random() * 2) + Math.random());
+    User.collection(DBMS.ClientInfoCollection).updateOne({_id:returnVal[i]._id},{$set:{State:value}})
   }
   console.log("DONE")
 } 
+
+
+
+async function randomeLevelAccount(){
+  let returnVal = await User.collection(DBMS.ClientInfoCollection).find({}).toArray();
+
+  for(let i = 0 ; i < returnVal.length; i ++){
+    let value = Math.floor((Math.random() * 2 + + Math.random()));
+    User.collection(DBMS.ClientInfoCollection).updateOne({_id:returnVal[i]._id},{$set:{"Level.NowLevel":value}})
+  }
+  console.log("DONE")
+} 
+
 
 
 app.get('/', (req, res, next) => {

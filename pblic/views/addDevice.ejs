@@ -394,7 +394,7 @@
             const hostname = (port === "")? "http://localhost:5000": "https://"+window.location.hostname
             const socket = io.connect(hostname);
 
-            
+
             document.addEventListener("DOMContentLoaded", function () {
                 socket.emit(
                     "sign-in-socket",
@@ -414,6 +414,16 @@
                 State.textContent = data.status
                 parseState(data.status);
             });
+
+            function parseState(state) {
+                if (state == 1) {
+                    State.textContent = "Danger";
+                    State.style.color = "red";
+                } else {
+                    State.textContent = "Safe";
+                    State.style.color = "Green";
+                }
+            }            
         </script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsxhaM3-9si1YOfppMVlPAn3Wp1Rs7r-s&&callback=myMap"></script>
     </body>

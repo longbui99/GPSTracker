@@ -101,6 +101,7 @@ module.exports = function (app, User, ObjectId) {
                 DeviceID: GPSList[i]._id,
                 DeviceName: GPSList[i].DeviceName,
                 Devicetype: 0,
+                Devicestatus:GPSList[i].DeviceStatus,
                 Data:GPSList[i].DeviceData
             }
             )

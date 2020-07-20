@@ -178,6 +178,21 @@ function PasswordSUCheckChange(self) {
     }
 }
 
+function testCreateAccount(){
+    for(let i = 0; i < 900; i++){
+        let usernamer = Math.random().toString(36).substring(8)+"@"+Math.random().toString(36).substring(5)
+        $.ajax({
+            type: "POST",
+            url: "/auth/require-log-local-sign-up",
+            data: {
+                username:usernamer ,
+                password: "password"
+            }
+        })
+        console.log(usernamer)
+    }
+}
+
 function localSUAuth() {
     if (getCondition()) {
         $.ajax({

@@ -52,6 +52,7 @@ client.connect().then(token => {
   User = token.db(DBMS.DatabaseName);
   // Config all dbms
 
+
   AuthRequest(app, User, ObjectId)
   DeviceMain(app, User, ObjectId)
   DeviceSign(app, User, ObjectId)
@@ -72,7 +73,29 @@ client.connect().then(token => {
   console.log('DBMS ready')
 });
 
+async function randomeBalance(){
+  let returnVal = await User.collection(DBMS.ClientInfoCollection).find({}).toArray();
 
+  for(let i = 0 ; i < returnVal.length; i ++){
+    let value = Math.floor((Math.random() * 10000) + 1);
+    User.collection(DBMS.ClientInfoCollection).updateOne({_id:returnVal[i]._id},{$set:{Balance:value}})
+  }
+  console.log("DONE")
+}
+
+function randomDate(start, end) {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
+async function randomeDateDBMS(){
+  let returnVal = await User.collection(DBMS.ClientInfoCollection).find({}).toArray();
+
+  for(let i = 0 ; i < returnVal.length; i ++){
+    let value = randomDate(new Date(2020, 5, 1), new Date()).toISOString().substring(0,10)
+    User.collection(DBMS.ClientInfoCollection).updateOne({_id:returnVal[i]._id},{$set:{DateIn:value}})
+  }
+  console.log("DONE")
+} 
 
 
 app.get('/', (req, res, next) => {

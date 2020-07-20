@@ -4,6 +4,8 @@
 const DBMS = require('../Config/DBMS')
 const Mail = require('../MailInf/MailExport');
 const Parse = require('./AdmModule/Parse')
+const MLean = require('../MachineAnalyze/MachineExport')
+const Kmeans = require('node-kmeans');
 
 module.exports = function (app, User, ObjectId) {
 
@@ -178,6 +180,27 @@ module.exports = function (app, User, ObjectId) {
 
         let Options = parseMail(req.body.recieveMail, userMessage, req.body.message)
         Mail.sendMail(res, Options)
+    })
+    app.post('/adm-account/kmean-clustering', async (req, res) => {
+        let returnVal = await User.collection(DBMS.ClientInfoCollection).find({},{
+            projection:{
+                _id:1,
+                Fname:1,
+                Lname:1,
+                Balance:1,
+                DateIn:1
+            }
+        }).toArray()
+        let ArrayData = new Array()
+        for (let i = 0; i < returnVal.length; i++){
+            ArrayData[i] = [returnVal[i]["Balance"], Math.ceil(parseFloat(new Date()- new  Date(returnVal[i][["DateIn"]])) / (86400000))]
+        }
+        Kmeans.clusterize(ArrayData, { k: req.body.num }, (err, result) => {
+            if (err) console.error(err);
+            else {
+                res.send({kmean:result,data:returnVal})
+            }
+        });
     })
 
     app.post('/logout-request', (req, res) => {

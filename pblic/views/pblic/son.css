@@ -104,7 +104,9 @@ h3 {
 }
 
 .setting {
+    height:280px;
     text-align: center;
+    overflow: overlay;
 }
 
 .setting select {
@@ -131,7 +133,7 @@ h3 {
 
 
 .bell {
-    margin-left: 40px;
+    margin-left: 38px;
     color:white
 }
 

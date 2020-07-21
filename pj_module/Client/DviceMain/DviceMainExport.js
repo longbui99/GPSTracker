@@ -4,14 +4,13 @@ const DBMS = require("../../Config/DBMS");
 // User: Database
 
 module.exports = function (app, Users, ObjectId) {
-
   app.post("/cli-main/get-gps-information", (req, res) => {
     Users.collection(DBMS.GPSDeviceCollection)
       .find(
         {
           DeviceOwnerID: req.user.id,
         },
-        { projection: { DeviceStatus: 1, DeviceData: 1 } }
+        { projection: { DeviceStatus: 1, DeviceData: 1, DeviceName: 1 } }
       )
       .toArray(function (err, response) {
         // console.log(response)

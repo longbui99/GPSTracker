@@ -2,7 +2,6 @@
 let countTime = 0;
 let IpLong = document.getElementById("logitude");
 let IpLat = document.getElementById("latitude");
-var labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 var labelIndex = 0;
 let map;
 let circle;
@@ -30,9 +29,20 @@ $.ajax({
         lat: parseFloat(device.DeviceData.Latitude),
         lng: parseFloat(device.DeviceData.Longitude),
       },
-      label: labels[labelIndex++ % labels.length],
       map,
-      // icon:'../Client/DviceMain/gps64.png'
+      icon: {
+        url: device.DeviceStatus
+          ? "../Client/DviceMain/danger-marker.png"
+          : "../Client/DviceMain/safe-marker.png",
+        labelOrigin: new google.maps.Point(34, 0),
+      },
+      label: {
+        text: device.DeviceName,
+        color: "white",
+        fontFamily: "",
+        fontWeight: "bold",
+        fontSize: "16px",
+      },
     });
     markers.set(device._id, marker);
 
@@ -40,8 +50,8 @@ $.ajax({
       $(
         " <button id='" +
           device._id +
-          "' class='btn btn-outline-secondary ml-2 mb-2 force-overflow' type='button' id='button-addon2'>GPS " +
-          marker.getLabel() +
+          "' class='btn btn-outline-secondary ml-2 mb-2 force-overflow' type='button' id='button-addon2' style='width: 67px !important;'>" +
+          marker.getLabel().text +
           "</button>"
       ).on("click", function () {
         $("edit-btn").trigger("click");
@@ -56,12 +66,11 @@ $.ajax({
         });
 
         //focus map
-        // initMap(device.DeviceData.Latitude, device.DeviceData.Longitude, 5);
         map.panTo({
           lat: device.DeviceData.Latitude,
           lng: device.DeviceData.Longitude,
         });
-        map.setZoom(5);
+        map.setZoom(13);
 
         $("#edit-btn-container").empty();
         $("#edit-btn-container").append(
@@ -515,17 +524,21 @@ document.addEventListener("DOMContentLoaded", function () {
 socket.on("emit-new-gps", (data) => {
   //  data.gpsID; ID of GPS, user for determine what is the GPS change
   var lbl = markers.get(data.gpsID).getLabel();
-  markers.get(data.gpsID).setMap(null);
-  marker = new google.maps.Marker({
-    position: {
-      lat: data.data[1],
-      lng: data.data[0],
-    },
-    label: lbl,
-    map,
-    // icon:'../Client/DviceMain/gps64.png'
+  markers.get(data.gpsID).setPosition({
+    lat: data.data[1],
+    lng: data.data[0],
   });
-  markers.set(data.gpsID, marker);
+  // markers.get(data.gpsID).setMap(null);
+  // marker = new google.maps.Marker({
+  //   position: {
+  //     lat: data.data[1],
+  //     lng: data.data[0],
+  //   },
+  //   label: lbl,
+  //   map,
+  //   // icon:'../Client/DviceMain/gps64.png'
+  // });
+  // markers.set(data.gpsID, marker);
 });
 
 // Whenever data change, MQTT, User change, ...,
@@ -533,4 +546,12 @@ socket.on("emit-new-gps", (data) => {
 socket.on("update-status-GPS", (data) => {
   // id: ID of GPS, string type
   //State.textContent = data.status;
+  console.log(data.id);
+  console.log(data.status);
+
+  if (data.status) {
+    markers.get(data.gpsID).setIcon("../Client/DviceMain/danger-marker.png");
+  } else {
+    markers.get(data.gpsID).setIcon("../Client/DviceMain/safe-marker.png");
+  }
 });

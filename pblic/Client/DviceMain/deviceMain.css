@@ -20,8 +20,14 @@ body {
 }
 
 .active-btn {
-  background-color: #555;
+  background-color: rgb(53, 60, 81);
   color: #f1f1f1;
+}
+
+#nav_button_bar button {
+  border-radius: 10px;
+  outline: none;
+  margin: -3px;
 }
 
 #panel {

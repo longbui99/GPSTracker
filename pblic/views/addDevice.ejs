@@ -27,7 +27,7 @@
       <div id="googleMap"></div>
       <div class="my_button">
         <button style="width: 60px; height: 50px; cursor: pointer;" class="b">
-          <i class="fa fa-home fa-3x" aria-hidden="true"></i>
+          <i class="fa fa-home fa-3x" aria-hidden="true"><a href="localhost:5000/"></a></i>
         </button>
         <button style="width: 60px; height: 50px; cursor: pointer;" class="b">
           <i class="fa fa-user-circle-o fa-3x" aria-hidden="true"></i>
@@ -131,6 +131,7 @@
       var b = document.getElementsByClassName("b");
       var map;
       let marker = [];
+      let markers = new Map();
       function myMap() {
         var mapProp = {
           center: new google.maps.LatLng(10.880693, 106.804869),
@@ -152,11 +153,12 @@
         //     };
         //     var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
         // }
+        let j = 0;
         for (let i = 0; i < result.length; i++) {
           if (result[i].Devicetype == 0) {
             console.log(result[i].Data.Latitude);
             //console.log(result[i].coordinate)
-            marker[i] = new google.maps.Marker({
+            marker[j] = new google.maps.Marker({
               position: {
                 lat: result[i].Data.Latitude,
                 lng: result[i].Data.Longitude,
@@ -165,6 +167,8 @@
               map: map,
               title: "GPS Name: " + result[i].DeviceName,
             });
+            markers.set(result[i].DeviceID, marker[j])
+            j++;
           }
         }
       });
@@ -212,35 +216,7 @@
       let GPSList = [];
       let j = 0;
       let gps = document.getElementById("GPS");
-      // $("add_button").click((e) => {
-      //     console.log("abc");
-      // })
-      // $("#add").click(function(){
-      //     if (x == true){
-      //         $.ajax({
-      //             url: "/cli-main/get-all-device",
-      //             type: "POST",
-      //         }).done((result) => {
-      //             if (result.length > 0){
-      //                 var mapProp= {
-      //                     center:new google.maps.LatLng(10.880693, 106.804869),
-      //                     zoom:5,
-      //                 };
-      //                 var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-      //             }
-      //             for (let i=0; i< result.length; i++){
-      //                 if (result[i].Devicetype == 0){
-      //                     console.log(result[i].Data.Latitude)
-      //                     marker[i] = new google.maps.Marker({
-      //                         position: {lat: result[i].Data.Latitude, lng: result[i].Data.Longitude},
-      //                         map: map,
-      //                         title: 'GPS Name: ' + result[i].DeviceName
-      //                     });
-      //                 }
-      //             }
-      //         })
-      //     }
-      // })
+    
       $("#search").click(function () {
         //console.log("abc");
         var search = $("#searchID").val();
@@ -258,17 +234,6 @@
               alert("Incorrect ID, please try again!");
             } else {
               document.getElementById("about").style.display = "block";
-              //console.log(result.coordinate.Longitude);
-              // var mapProp= {
-              //     center:new google.maps.LatLng(result.coordinate.Latitude, result.coordinate.Longitude),
-              //     zoom:15,
-              // };
-              // var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-              // var marker = new google.maps.Marker({
-              //     position: {lat: result.coordinate.Latitude, lng: result.coordinate.Longitude},
-              //     map: map
-              // });
-              //result = result[0];
               id.textContent = result.DeviceID;
               //name.textContent = result.DeviceName;
               if (result.Devicetype == 0) {
@@ -321,11 +286,12 @@
                 mapProp
               );
             }
+            j = 0;
             for (let i = 0; i < result.length; i++) {
               if (result[i].Devicetype == 0) {
                 console.log(result[i].Data.Latitude);
                 //console.log(result[i].coordinate)
-                marker[i] = new google.maps.Marker({
+                marker[j] = new google.maps.Marker({
                   position: {
                     lat: result[i].Data.Latitude,
                     lng: result[i].Data.Longitude,
@@ -334,6 +300,8 @@
                   map: map,
                   title: "GPS Name: " + result[i].DeviceName,
                 });
+                markers.set(result.DeviceID, marker[j]);
+                j++;
               }
             }
           });
@@ -399,33 +367,6 @@
           });
         }
       });
-      // $.ajax({
-      //     url: "/cli-main/get-all-device",
-      //     type: "POST",
-      // }).done((result) => {
-      //     for (let i=0; i<result.length; i++){
-      //         if (result[i].Devicetype == 0){
-      //             GPSIDList[j] = result[i].DeviceID
-      //             GPSList[j] = result[i];
-      //             $("#all-device").append(
-      //                 "<label id='GPS"+j+"'for='GPS' style='margin-right: 130px;'>"+GPSList[j].DeviceName+"</label>"+
-      //                 "<img src='/views/pblic/img/tools.png' alt='' width='20px' height ='20px' style='position: absolute; left: 47%; margin-top:2px;'/>"+
-      //                 " <select id='choose"+j+"' style='position:relative; left:62px; top:-24px'></select>"+
-      //                 "<br></br>
-      //             )
-      //             j++;
-      //         }
-      //     }
-      //     for (let m=0; m<j; m++){
-      //         for (let k=0; k<result.length; k++){
-      //             if (result[k].Devicetype==1){
-      //                 $("#choose"+m).append(
-      //                     "<option value="+result[k].DeviceID+">"+result[k].DeviceName+"</option>"
-      //                 )
-      //             }
-      //         }
-      //     }
-      // });
 
       let List = [];
 
@@ -476,23 +417,20 @@
         //  data.gpsID; ID of GPS, user for determine what is the GPS change
         Longitude.textContent = data.data[0];
         Latitude.textContent = data.data[1];
+        markers.get(data.gpsID).setPosition({
+          lat: data.data[1],
+          lng: data.data[0],
+        });
       });
       socket.on("update-status-GPS", (data) => {
         // id: ID of GPS, string type
-        console.log(data);
-        State.textContent = data.status;
-        parseState(data.status);
+        if (data.status) {
+          markers.get(data.gpsID).setIcon("../Client/DviceMain/danger-marker.png");
+        } else {
+          markers.get(data.gpsID).setIcon("../Client/DviceMain/safe-marker.png");
+        }
       });
 
-      function parseState(state) {
-        if (state == 1) {
-          State.textContent = "Danger";
-          State.style.color = "red";
-        } else {
-          State.textContent = "Safe";
-          State.style.color = "Green";
-        }
-      }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsxhaM3-9si1YOfppMVlPAn3Wp1Rs7r-s&&callback=myMap"></script>
   </body>

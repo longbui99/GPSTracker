@@ -425,9 +425,9 @@
       socket.on("update-status-GPS", (data) => {
         // id: ID of GPS, string type
         if (data.status) {
-          markers.get(data.gpsID).setIcon("../Client/DviceMain/danger-marker.png");
+          markers.get(data.id).setIcon("../Client/DviceMain/danger-marker.png");
         } else {
-          markers.get(data.gpsID).setIcon("../Client/DviceMain/safe-marker.png");
+          markers.get(data.id).setIcon("../Client/DviceMain/safe-marker.png");
         }
       });
 

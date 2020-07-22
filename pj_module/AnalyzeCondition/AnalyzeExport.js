@@ -150,7 +150,7 @@ async function SingleAnalyze(GPSoptions = null, UserId = null) {
     {
       GPSID: GPSoptions,
     },
-    { projection: { Data: 1, InformId: 1, Data: 1 } }
+    { projection: { Data: 1, InformId: 1 } }
   );
 
   let control=false, distance = 0;
@@ -173,6 +173,10 @@ async function SingleAnalyze(GPSoptions = null, UserId = null) {
     tmp = 0
 
   MQTT.publicizeToDevice(UserGPSData.InformId, tmp, DeviceGPSData.DeviceStatus);
+  console.log({
+    id: GPSoptions,
+    status: tmp,
+  })
   io.to(UserId).emit("update-status-GPS", {
     id: GPSoptions,
     status: tmp,

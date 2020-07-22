@@ -92,7 +92,8 @@ module.exports = function (app, User, ObjectId) {
             projection: {
                 _id: 1,
                 DeviceName: 1,
-                DeviceData:1
+                DeviceData:1,
+                DeviceStatus:1
             }
         }).toArray()
         let lst = []

@@ -135,7 +135,7 @@
       function myMap() {
         var mapProp = {
           center: new google.maps.LatLng(10.880693, 106.804869),
-          zoom: 5,
+          zoom: 8,
         };
         map = new google.maps.Map(
           document.getElementById("googleMap"),
@@ -156,7 +156,7 @@
         let j = 0;
         for (let i = 0; i < result.length; i++) {
           if (result[i].Devicetype == 0) {
-            console.log(result[i].Data.Latitude);
+            console.log(result[i].Devicestatus);
             //console.log(result[i].coordinate)
             marker[j] = new google.maps.Marker({
               position: {
@@ -165,7 +165,18 @@
               },
               //position: {lat: 10.880693, lng: 106.804869},
               map: map,
-              title: "GPS Name: " + result[i].DeviceName,
+              icon: {
+                url: result[i].Devicestatus
+                  ? "../Client/DviceMain/danger-marker.png"
+                  : "../Client/DviceMain/safe-marker.png",
+                labelOrigin: new google.maps.Point(34, 0),
+              },
+              label: {
+                text: result[i].DeviceName,
+                color: "white",
+                fontWeight: "bold",
+                fontSize: "16px"
+              }
             });
             markers.set(result[i].DeviceID, marker[j])
             j++;
@@ -279,7 +290,7 @@
             if (result.length > 0) {
               var mapProp = {
                 center: new google.maps.LatLng(10.880693, 106.804869),
-                zoom: 5,
+                zoom: 8,
               };
               var map = new google.maps.Map(
                 document.getElementById("googleMap"),
@@ -298,7 +309,18 @@
                   },
                   //position: {lat: 10.880693, lng: 106.804869},
                   map: map,
-                  title: "GPS Name: " + result[i].DeviceName,
+                  icon: {
+                    url: result[i].Devicestatus
+                      ? "../Client/DviceMain/danger-marker.png"
+                      : "../Client/DviceMain/safe-marker.png",
+                    labelOrigin: new google.maps.Point(34, 0),
+                  },
+                  label: {
+                    text: result[i].DeviceName,
+                    color: "white",
+                    fontWeight: "bold",
+                    fontSize: "16px"
+                  }
                 });
                 markers.set(result.DeviceID, marker[j]);
                 j++;
@@ -308,9 +330,9 @@
         });
       });
       $("#setting").click(function () {
-        for (i = 0; i < marker.length; i++) {
-          marker[i].setMap(null);
-        }
+        // for (i = 0; i < marker.length; i++) {
+        //   marker[i].setMap(null);
+        // }
         settingOn();
         // var search = $('#searchID').val();
         if (y == true) {
@@ -396,14 +418,14 @@
           console.log(result);
         });
       });
-      //const socket = io.connect("http://localhost:5000");
+      const socket = io.connect("http://localhost:5000");
       //const socket = io.connect(window.location.hostname);
-      const port = window.location.port;
-      const hostname =
-        port === ""
-          ? "http://localhost:5000"
-          : "https://" + window.location.hostname;
-      const socket = io.connect(hostname);
+      // const port = window.location.port;
+      // const hostname =
+      //   port === ""
+      //     ? "http://localhost:5000"
+      //     : "https://" + window.location.hostname;
+      // const socket = io.connect(hostname);
 
       document.addEventListener("DOMContentLoaded", function () {
         socket.emit(

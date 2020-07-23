@@ -17,7 +17,6 @@ exports.Init = function (app, Users, ObjectIds, ios) {
         { projection: { DeviceStatus: 1, DeviceData: 1 } }
       )
       .toArray(function (err, response) {
-        // console.log(response)
         res.send(response);
       });
   });
@@ -173,10 +172,6 @@ async function SingleAnalyze(GPSoptions = null, UserId = null) {
     tmp = 0
 
   MQTT.publicizeToDevice(UserGPSData.InformId, tmp, DeviceGPSData.DeviceStatus);
-  console.log({
-    id: GPSoptions,
-    status: tmp,
-  })
   io.to(UserId).emit("update-status-GPS", {
     id: GPSoptions,
     status: tmp,

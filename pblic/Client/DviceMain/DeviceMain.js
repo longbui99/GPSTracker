@@ -47,10 +47,10 @@ $.ajax({
     $("#device-buttons-container").append(
       $(
         " <button id='" +
-          device._id +
-          "' class='btn btn-outline-secondary ml-2 mb-2 force-overflow' type='button' id='button-addon2' style='width: 67px !important;'>" +
-          marker.getLabel().text +
-          "</button>"
+        device._id +
+        "' class='btn btn-outline-secondary ml-2 mb-2 force-overflow' type='button' id='button-addon2' style='width: 67px !important;'>" +
+        marker.getLabel().text +
+        "</button>"
       ).on("click", function () {
         $("edit-btn").trigger("click");
         $("#zone-panel").hide();
@@ -121,10 +121,10 @@ $.ajax({
                 $(".zone-buttons-container").append(
                   $(
                     " <button class='btn btn-outline-secondary mb-2' type='button' id='" +
-                      zones[0].Data.indexOf(zone) +
-                      "'>Zone " +
-                      j +
-                      "</button>"
+                    zones[0].Data.indexOf(zone) +
+                    "'>Zone " +
+                    j +
+                    "</button>"
                   ).on("click", function () {
                     //Reset circle
                     circles[zones[0].Data.indexOf(zone)].setCenter({
@@ -188,22 +188,22 @@ $.ajax({
                               lat:
                                 $("#latitude").val() === ""
                                   ? circles[zones[0].Data.indexOf(zone)]
-                                      .getCenter()
-                                      .lat()
+                                    .getCenter()
+                                    .lat()
                                   : parseFloat($("#latitude").val()),
 
                               lng:
                                 $("#logitude").val() === ""
                                   ? circles[zones[0].Data.indexOf(zone)]
-                                      .getCenter()
-                                      .lng()
+                                    .getCenter()
+                                    .lng()
                                   : parseFloat($("#logitude").val()),
                             });
                             circles[zones[0].Data.indexOf(zone)].setRadius(
                               $("#radius").val() === ""
                                 ? circles[
-                                    zones[0].Data.indexOf(zone)
-                                  ].getRadius()
+                                  zones[0].Data.indexOf(zone)
+                                ].getRadius()
                                 : parseFloat($("#radius").val())
                             );
                             mapFocus(circles[zones[0].Data.indexOf(zone)]);
@@ -503,9 +503,12 @@ function resetCircle(circles, zone, zones) {
 }
 
 // Initial  socket connection (real time connection)
-const socket = io.connect("http://localhost:5000");
-// const socket = io.connect(window.location.hostname);
-// const socket = io.connect('https://getdateset.herokuapp.com')
+const port = window.location.port;
+const hostname =
+  port === ""
+    ? "https://" + window.location.hostname
+    : "http://localhost:5000";
+const socket = io.connect(hostname);
 
 // Sign socket with user id, and remove it in client-view
 document.addEventListener("DOMContentLoaded", function () {

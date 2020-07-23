@@ -418,14 +418,12 @@
           console.log(result);
         });
       });
-      const socket = io.connect("http://localhost:5000");
-      //const socket = io.connect(window.location.hostname);
-      // const port = window.location.port;
-      // const hostname =
-      //   port === ""
-      //     ? "http://localhost:5000"
-      //     : "https://" + window.location.hostname;
-      // const socket = io.connect(hostname);
+      const port = window.location.port;
+      const hostname =
+        port === ""
+          ?  "https://" + window.location.hostname
+          : "http://localhost:5000";
+      const socket = io.connect(hostname);
 
       document.addEventListener("DOMContentLoaded", function () {
         socket.emit(

@@ -84,8 +84,7 @@ module.exports = function (app, User, ObjectId) {
         }
     })
     app.post('/cli-main/get-all-device', async (req, res) => {
-
-        // console.log("On get devices:\n", req.body)
+        
         let GPSList = await User.collection(DBMS.GPSDeviceCollection).find({
             DeviceOwnerID:  req.user.id
         }, {

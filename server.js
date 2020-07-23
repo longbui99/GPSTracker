@@ -132,6 +132,7 @@ app.get('/', (req, res, next) => {
 })
 
 app.get('/log-out', (req, res) => {
+  req.logOut()
   req.logout()
   res.redirect('/')
 })

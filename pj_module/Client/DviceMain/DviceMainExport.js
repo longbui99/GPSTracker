@@ -1,4 +1,5 @@
 const DBMS = require("../../Config/DBMS");
+const Analyze = require("../../AnalyzeCondition/AnalyzeExport");
 
 // app: Server listening request and response to client side
 // User: Database
@@ -35,6 +36,7 @@ module.exports = function (app, Users, ObjectId) {
       }
     );
     res.send("zone update");
+    Analyze.SingleAnalyze(req.body.GPSID, req.user.id);
   });
 
   app.post("/cli-main/add-new-zone", (req, res) => {
@@ -54,6 +56,7 @@ module.exports = function (app, Users, ObjectId) {
       }
     );
     res.send("add new zone");
+    Analyze.SingleAnalyze(req.body.GPSID, req.user.id);
   });
 
   app.post("/cli-main/delete-zone", (req, res) => {
@@ -73,6 +76,7 @@ module.exports = function (app, Users, ObjectId) {
       }
     );
     res.send("zone deleted");
+    Analyze.SingleAnalyze(req.body.GPSID, req.user.id);
   });
 
   app.post("/cli-main/get-zone-information", (req, res) => {

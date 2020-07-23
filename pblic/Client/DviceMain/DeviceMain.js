@@ -1,8 +1,6 @@
 // Generate origin element
-let countTime = 0;
 let IpLong = document.getElementById("logitude");
 let IpLat = document.getElementById("latitude");
-var labelIndex = 0;
 let map;
 let circle;
 let circles = [];
@@ -236,7 +234,6 @@ $.ajax({
                         },
                       }).done((res) => {
                         //console.log(res);
-
                         $("#my-success").show("fade");
                         $("#my-success")
                           .fadeTo(2000, 500)
@@ -550,8 +547,8 @@ socket.on("update-status-GPS", (data) => {
   console.log(data.status);
 
   if (data.status) {
-    markers.get(data.gpsID).setIcon("../Client/DviceMain/danger-marker.png");
+    markers.get(data.id).setIcon("../Client/DviceMain/danger-marker.png");
   } else {
-    markers.get(data.gpsID).setIcon("../Client/DviceMain/safe-marker.png");
+    markers.get(data.id).setIcon("../Client/DviceMain/safe-marker.png");
   }
 });

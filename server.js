@@ -52,6 +52,11 @@ client.connect().then(token => {
   User = token.db(DBMS.DatabaseName);
   // Config all dbms
 
+  // randomeBalance()
+  // randomeDateDBMS()
+  // randomeLevelAccount()
+  // randomeStateAccount()
+
   AuthRequest(app, User, ObjectId)
   DeviceMain(app, User, ObjectId)
   DeviceSign(app, User, ObjectId)
@@ -90,7 +95,7 @@ async function randomeDateDBMS(){
   let returnVal = await User.collection(DBMS.ClientInfoCollection).find({}).toArray();
 
   for(let i = 0 ; i < returnVal.length; i ++){
-    let value = randomDate(new Date(2020, 5, 1), new Date()).toISOString().substring(0,10)
+    let value = randomDate(new Date(2020, 6, 1), new Date()).toISOString().substring(0,10)
     User.collection(DBMS.ClientInfoCollection).updateOne({_id:returnVal[i]._id},{$set:{DateIn:value}})
   }
   console.log("DONE")

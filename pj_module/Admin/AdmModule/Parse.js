@@ -23,6 +23,10 @@ exports.parseDateStart = function (dashboardType, displayType) {
             if (j < 0) j = 6
             listState.push(State.DashBoard.Week[j])
         }
+        if(dayIndex == 7){
+            data = listState.pop()
+            listState.push(data)
+        }
         nowTime.setDate(nowTime.getDate() - dayIndex+1)
         return [
             nowTime.toISOString().substring(0, 10),
